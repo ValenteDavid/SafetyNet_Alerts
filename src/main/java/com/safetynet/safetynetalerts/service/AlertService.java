@@ -4,6 +4,7 @@ import com.safetynet.safetynetalerts.model.Person;
 
 public interface AlertService {
 	
+	public Iterable<Person> listPersonByStationNumber(int stationNumber);
 	public Iterable<Person> listPersonByAddress(String address);
 	public Iterable<Person> listChildren(Person... persons);
 	public Iterable<Person> listAdult(Person... persons);

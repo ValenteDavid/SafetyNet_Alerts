@@ -39,6 +39,11 @@ public class AlertServiceImpl implements AlertService {
 	public Iterable<String> listEmail(Person... persons) {
 		return null;
 	}
+	@Override
+	public Iterable<Person> listPersonByStationNumber(int stationNumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	
 
