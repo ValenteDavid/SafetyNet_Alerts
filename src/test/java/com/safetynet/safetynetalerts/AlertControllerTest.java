@@ -16,30 +16,27 @@ import com.safetynet.safetynetalerts.service.AlertService;
 
 @WebMvcTest(controllers = AlertController.class)
 public class AlertControllerTest {
-	
+
 	@Autowired
-    private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-    @MockBean
-    private AlertService alertService;
+	@MockBean
+	private AlertService alertService;
 
-    @Test
-    public void testfindPersonInfoByFireStationNumber_Status_ValidArgument() throws Exception {
-    	String param = "1";
-        mockMvc.perform(
-        		get("/firestation")
-        			.param("stationNumber", param))
-            .andExpect(status().isOk());
-    }
-    
-    @ParameterizedTest(name = "param : {0}")
-    @ValueSource(strings = {"aaa","-1"})
-    public void testfindPersonInfoByFireStationNumber_Status_InvalidFormatArgument(String param) throws Exception {
-        mockMvc.perform(
-        		get("/firestation")
-        			.param("stationNumber", param))
-            .andExpect(status().isBadRequest());
-    }
+	@Test
+	public void testfindPersonInfoByFireStationNumber_Status_ValidArgument() throws Exception {
+		String param = "1";
+		mockMvc.perform(get("/firestation")
+				.param("stationNumber", param))
+				.andExpect(status().isOk());
+	}
 
+	@ParameterizedTest(name = "param : {0}")
+	@ValueSource(strings = { "aaa", "-1" })
+	public void testfindPersonInfoByFireStationNumber_Status_InvalidFormatArgument(String param) throws Exception {
+		mockMvc.perform(get("/firestation")
+				.param("stationNumber", param))
+				.andExpect(status().isBadRequest());
+	}
 
 }
