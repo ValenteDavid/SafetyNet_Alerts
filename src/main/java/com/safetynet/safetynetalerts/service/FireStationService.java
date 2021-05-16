@@ -8,4 +8,6 @@ public interface FireStationService {
 	public FireStation update(FireStation fireStation);
 	public void delete(String adresse,int stationNumber);
 	
+	public Iterable<String> findAddressByStationNumber(int stationNumber);
+	
 }

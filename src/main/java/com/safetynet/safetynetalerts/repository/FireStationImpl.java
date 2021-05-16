@@ -1,6 +1,10 @@
 package com.safetynet.safetynetalerts.repository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
 
@@ -12,8 +16,14 @@ public class FireStationImpl implements FireStationDao{
 	public static List<FireStation> fireStations;
 	
 	@Override
-	public Iterable<String> findAllByStationNumber(int station_number) {
-		return null;
+	public Iterable<String> findAddressByStationNumber(int station_number) {
+		Set<String> setAddress = new HashSet<>();
+		
+		Stream<FireStation> stream = StreamSupport.stream(fireStations.spliterator(), false);
+		
+		stream.filter(x -> x.getStationNumber()==station_number )
+		.forEach(x -> setAddress.add(x.getAddress()));
+		return setAddress;
 	}
 
 	@Override

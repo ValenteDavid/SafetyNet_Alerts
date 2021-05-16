@@ -1,5 +1,7 @@
 package com.safetynet.safetynetalerts.service;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +20,8 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public Iterable<Person> findAllByAddress(String address) {
-		return null;
+	public Collection<Person> findAllByAddress(String address) {
+		return personDao.findAllByAddress(address);
 	}
 
 	@Override
@@ -40,6 +42,4 @@ public class PersonServiceImpl implements PersonService {
 	@Override
 	public void delete(Person person) {
 	}
-
-
 }

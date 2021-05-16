@@ -25,5 +25,10 @@ public class FireStationServiceImpl implements FireStationService{
 	@Override
 	public void delete(String adresse, int stationNumber) {
 	}
+
+	@Override
+	public Iterable<String> findAddressByStationNumber(int stationNumber) {
+		return fireStationDao.findAddressByStationNumber(stationNumber);
+	}
 	
 }

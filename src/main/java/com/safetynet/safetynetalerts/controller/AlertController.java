@@ -1,5 +1,6 @@
 package com.safetynet.safetynetalerts.controller;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class AlertController {
 		
 		Set<PersonFireStationAlertDTO> personFireStationAlertDTOs = new HashSet<PersonFireStationAlertDTO>();
 		
-		Iterable<Person> iterablePerson = alertService.listPersonByStationNumber(stationNumber);
+		Collection<Person> iterablePerson = alertService.listPersonByStationNumber(stationNumber);
 		
 		if (iterablePerson == null ) {
 			throw new NotFoundException("No one found at this station number :" + stationNumber);
@@ -53,7 +54,14 @@ public class AlertController {
 		stream.forEach(x -> personFireStationAlertDTOs.add(
 				new PersonFireStationAlertDTO(
 						x.getFirstName(), x.getLastName(), x.getAddress(), x.getPhone())));
-
+		
+		Person[] setPerson = new Person[iterablePerson.size()] ;
+		setPerson = iterablePerson.toArray(setPerson);
+		
+		fireStationAlertDTO.setListPerson(personFireStationAlertDTOs);
+		fireStationAlertDTO.setNumberOfAdults(alertService.numberOfAdult(setPerson));
+		fireStationAlertDTO.setNumberOfChildren(alertService.numberOfChildren(setPerson));
+		
 		return fireStationAlertDTO;
 	}
 

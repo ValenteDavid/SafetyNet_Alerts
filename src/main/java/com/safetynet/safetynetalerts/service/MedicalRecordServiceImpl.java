@@ -14,7 +14,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
 
 	@Override
 	public MedicalRecord findByFirstNameANDLastName(String firstName, String lastName) {
-		return null;
+		return medicalRecordDao.findByFirstNameANDLastName(firstName, lastName);
 	}
 
 	@Override
