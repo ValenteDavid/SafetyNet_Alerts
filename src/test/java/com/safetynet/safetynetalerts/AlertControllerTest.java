@@ -57,7 +57,7 @@ public class AlertControllerTest {
 	@Test
 	public void testphoneAlert_Status_ValidArgument() throws Exception {
 		String firestation = "1";
-		when(alertService.listPersonByStationNumber(1)).thenReturn(Mockito.<Person>anyCollection());
+		when(alertService.listPersonPhoneByStationNumber(1)).thenReturn(Mockito.<String>anyIterable());
 		
 		mockMvc.perform(get("/phoneAlert")
 				.param("firestation", firestation))
@@ -75,7 +75,7 @@ public class AlertControllerTest {
 	@Test
 	public void testphoneAlert_Status_NotFound() throws Exception {
 		String firestation = "1";
-		when(alertService.listPersonByStationNumber(1)).thenReturn(null);
+		when(alertService.listPersonPhoneByStationNumber(1)).thenReturn(null);
 		
 		mockMvc.perform(get("/phoneAlert")
 				.param("firestation", firestation))

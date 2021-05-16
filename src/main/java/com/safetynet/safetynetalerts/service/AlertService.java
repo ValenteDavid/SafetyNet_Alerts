@@ -15,5 +15,6 @@ public interface AlertService {
 	public int numberOfAdult(Person... persons);
 	
 	public Iterable<String> listEmail(Person... persons);
+	public Iterable<String> listPersonPhoneByStationNumber(int stationNumber);
 	
 }

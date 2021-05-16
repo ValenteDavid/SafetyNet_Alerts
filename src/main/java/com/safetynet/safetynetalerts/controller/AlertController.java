@@ -38,7 +38,7 @@ public class AlertController {
 		FireStationAlertDTO fireStationAlertDTO = new FireStationAlertDTO();
 		
 		if (stationNumber <= 0) {
-			throw new InvalidArgumentException("The station number cannot be less than or equal to 0 :" + stationNumber);
+			throw new InvalidArgumentException(InvalidArgumentException.typeArg.STATION_NUMBER,stationNumber);
 		}
 		
 		Set<PersonFireStationAlertDTO> personFireStationAlertDTOs = new HashSet<PersonFireStationAlertDTO>();
@@ -72,7 +72,21 @@ public class AlertController {
 
 	@GetMapping("/phoneAlert")
 	public PhoneAlertDTO phoneAlert(@RequestParam("firestation") int firestation_number) {
-		return null;
+		
+		PhoneAlertDTO phoneAlertDTO = new PhoneAlertDTO();
+		
+		if (firestation_number <= 0) {
+			throw new InvalidArgumentException(InvalidArgumentException.typeArg.STATION_NUMBER,firestation_number);
+		}
+		
+		Iterable<String> iterablePhone = alertService.listPersonPhoneByStationNumber(firestation_number);
+		
+		if (iterablePhone == null ) {
+			throw new NotFoundException("No found person number at this station number :" + firestation_number);
+		}
+		phoneAlertDTO.setListNumbers(null);
+		
+		return phoneAlertDTO;
 	}
 
 	@GetMapping("/fire")

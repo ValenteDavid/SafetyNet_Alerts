@@ -97,4 +97,12 @@ public class AlertServiceImpl implements AlertService {
 		return birthdateInstant;
 	}
 
+	@Override
+	public Iterable<String> listPersonPhoneByStationNumber(int stationNumber) {
+		Set<String> setPhone = new HashSet<>();
+		Stream<Person> stream = listPersonByStationNumber(stationNumber).stream();
+		stream.forEach(x-> setPhone.add(x.getAddress()));
+		return setPhone;
+	}
+
 }
