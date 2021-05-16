@@ -1,6 +1,5 @@
 package com.safetynet.safetynetalerts;
 
-import static org.hamcrest.CoreMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -54,4 +53,33 @@ public class AlertControllerTest {
 				.param("stationNumber", stationNumber))
 				.andExpect(status().isNotFound());
 	}
+
+	@Test
+	public void testphoneAlert_Status_ValidArgument() throws Exception {
+		String firestation = "1";
+		when(alertService.listPersonByStationNumber(1)).thenReturn(Mockito.<Person>anyCollection());
+		
+		mockMvc.perform(get("/phoneAlert")
+				.param("firestation", firestation))
+				.andExpect(status().isOk());
+	}
+
+	@ParameterizedTest(name = "firestation : {0}")
+	@ValueSource(strings = { "aaa", "-1" })
+	public void testphoneAlert_Status_InvalidFormatArgument(String firestation) throws Exception {
+		mockMvc.perform(get("/phoneAlert")
+				.param("firestation", firestation))
+				.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void testphoneAlert_Status_NotFound() throws Exception {
+		String firestation = "1";
+		when(alertService.listPersonByStationNumber(1)).thenReturn(null);
+		
+		mockMvc.perform(get("/phoneAlert")
+				.param("firestation", firestation))
+				.andExpect(status().isNotFound());
+	}
+
 }
