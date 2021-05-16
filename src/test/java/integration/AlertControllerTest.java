@@ -59,4 +59,21 @@ public class AlertControllerTest {
 						"841-874-7458",
 						"841-874-6513")));
 	}
+
+	@Test
+	public void testfireAlert_ReturnContent_ValidArgument() throws Exception {
+		String address = "1509 Culver St";
+
+		mockMvc.perform(get("/fire")
+				.param("address", address))
+				.andExpect(status().isOk())
+
+				.andExpect(jsonPath("$.personMedicalRecord[*].lastName", IsAnything.anything()))
+				.andExpect(jsonPath("$.personMedicalRecord[*].phone", IsAnything.anything()))
+				.andExpect(jsonPath("$.personMedicalRecord[*].age", IsAnything.anything()))
+				.andExpect(jsonPath("$.personMedicalRecord[*].medications", IsAnything.anything()))
+				.andExpect(jsonPath("$.personMedicalRecord[*].allergies", IsAnything.anything()))
+
+				.andExpect(jsonPath("$.stationNumber", is(3)));
+	}
 }

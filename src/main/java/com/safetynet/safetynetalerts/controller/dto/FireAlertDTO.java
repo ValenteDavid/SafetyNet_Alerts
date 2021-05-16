@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class FireAlertDTO {
 
-	private Set<PersonMedicalRecordDTO> setPersonMedicalRecord;
+	private Set<PersonMedicalRecordDTO> personMedicalRecord;
 	private int stationNumber;
 
 	public FireAlertDTO() {
@@ -13,16 +13,16 @@ public class FireAlertDTO {
 
 	public FireAlertDTO(Set<PersonMedicalRecordDTO> setPersonMedicalRecord, int stationNumber) {
 		super();
-		this.setPersonMedicalRecord = setPersonMedicalRecord;
+		this.personMedicalRecord = setPersonMedicalRecord;
 		this.stationNumber = stationNumber;
 	}
 
-	public Set<PersonMedicalRecordDTO> getSetPersonMedicalRecord() {
-		return setPersonMedicalRecord;
+	public Set<PersonMedicalRecordDTO> getPersonMedicalRecord() {
+		return personMedicalRecord;
 	}
 
 	public void setListPersonMedicalRecord(Set<PersonMedicalRecordDTO> setPersonMedicalRecord) {
-		this.setPersonMedicalRecord = setPersonMedicalRecord;
+		this.personMedicalRecord = setPersonMedicalRecord;
 	}
 
 	public int getStationNumber() {
@@ -35,7 +35,7 @@ public class FireAlertDTO {
 
 	@Override
 	public String toString() {
-		return "FireAlertDTO [setPersonMedicalRecord=" + setPersonMedicalRecord + ", stationNumber=" + stationNumber
+		return "FireAlertDTO [setPersonMedicalRecord=" + personMedicalRecord + ", stationNumber=" + stationNumber
 				+ "]";
 	}
 
