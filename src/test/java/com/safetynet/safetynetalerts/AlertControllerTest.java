@@ -81,5 +81,25 @@ public class AlertControllerTest {
 				.param("firestation", firestation))
 				.andExpect(status().isNotFound());
 	}
+	
+	@Test
+	public void testfireAlert_Status_ValidArgument() throws Exception {
+		String address = "anyAddress";
+		when(alertService.listPersonByAddress(address)).thenReturn(Mockito.<Person>anyIterable());
+		
+		mockMvc.perform(get("/fire")
+				.param("address", address))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void testfireAlert_Status_NotFound() throws Exception {
+		String address = "anyAddress";
+		when(alertService.listPersonByAddress(address)).thenReturn(null);
+		
+		mockMvc.perform(get("/fire")
+				.param("address", address))
+				.andExpect(status().isNotFound());
+	}
 
 }
