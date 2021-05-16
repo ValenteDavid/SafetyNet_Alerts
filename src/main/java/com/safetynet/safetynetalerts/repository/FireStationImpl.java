@@ -25,6 +25,18 @@ public class FireStationImpl implements FireStationDao{
 		.forEach(x -> setAddress.add(x.getAddress()));
 		return setAddress;
 	}
+	@Override
+	public Integer findStationNumberByAddress(String address) {
+		Integer stationNumber=null;
+		
+		Stream<FireStation> stream = StreamSupport.stream(fireStations.spliterator(), false);
+		
+		stationNumber = 
+				stream.filter(x -> x.getAddress().equals(address))
+				.findFirst()
+				.get().getStationNumber();
+		return stationNumber;
+	}
 
 	@Override
 	public Iterable<FireStation> findAll() {
@@ -45,5 +57,4 @@ public class FireStationImpl implements FireStationDao{
 	public void delete(FireStation fireStation) {
 		
 	}
-
 }

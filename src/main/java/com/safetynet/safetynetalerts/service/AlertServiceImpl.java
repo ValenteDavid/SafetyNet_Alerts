@@ -1,6 +1,8 @@
 package com.safetynet.safetynetalerts.service;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -16,6 +18,7 @@ import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.safetynet.safetynetalerts.model.MedicalRecord;
 import com.safetynet.safetynetalerts.model.Person;
 
 @Service
@@ -43,7 +46,7 @@ public class AlertServiceImpl implements AlertService {
 
 	@Override
 	public Iterable<Person> listPersonByAddress(String address) {
-		return null;
+		return personService.findAllByAddress(address);
 	}
 
 	@Override
@@ -101,8 +104,43 @@ public class AlertServiceImpl implements AlertService {
 	public Collection<String> listPersonPhoneByStationNumber(int stationNumber) {
 		Set<String> setPhone = new HashSet<>();
 		Stream<Person> stream = listPersonByStationNumber(stationNumber).stream();
-		stream.forEach(x-> setPhone.add(x.getPhone()));
+		stream.forEach(x -> setPhone.add(x.getPhone()));
 		return setPhone;
+	}
+
+	@Override
+	public Integer findStationNumberByAddress(String Address) {
+		return fireStationService.findStationNumberByAddress(Address);
+	}
+
+	@Override
+	public MedicalRecord listMedicalRecordByFirstNameANDLastName(String firstName, String lastName) {
+		return medicalRecordService.findByFirstNameANDLastName(firstName, lastName);
+	}
+
+	@Override
+	public int ageOfPersonByBirthdate(Date birthdate) {
+		Calendar birthdateCalendar = Calendar.getInstance();
+		birthdateCalendar.setTime(birthdate);
+		int year = birthdateCalendar.get(Calendar.YEAR);
+		int month = birthdateCalendar.get(Calendar.MONTH) + 1;
+		int date = birthdateCalendar.get(Calendar.DATE);
+		
+		LocalDate l1 = LocalDate.of(year, month, date);
+		LocalDate now1 = LocalDate.now();
+		Period diff1 = Period.between(l1, now1);
+		
+		int age = diff1.getYears();
+
+		return age;
+	}
+
+	@Override
+	public int ageOfPersonByPerson(Person person) {
+		Date birthdate = medicalRecordService.findByFirstNameANDLastName(person.getFirstName(), person.getLastName())
+				.getBirthdate();
+		int age = ageOfPersonByBirthdate(birthdate);
+		return age;
 	}
 
 }

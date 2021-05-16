@@ -19,6 +19,7 @@ import com.safetynet.safetynetalerts.controller.dto.FireStationAlertDTO;
 import com.safetynet.safetynetalerts.controller.dto.FloodAlertDTO;
 import com.safetynet.safetynetalerts.controller.dto.PersonFireStationAlertDTO;
 import com.safetynet.safetynetalerts.controller.dto.PersonInfoAlertDTO;
+import com.safetynet.safetynetalerts.controller.dto.PersonMedicalRecordDTO;
 import com.safetynet.safetynetalerts.controller.dto.PhoneAlertDTO;
 import com.safetynet.safetynetalerts.controller.exceptions.InvalidArgumentException;
 import com.safetynet.safetynetalerts.controller.exceptions.NotFoundException;
@@ -34,34 +35,32 @@ public class AlertController {
 	@GetMapping("/firestation")
 	public FireStationAlertDTO findPersonInfoByFireStationNumber(
 			@RequestParam("stationNumber") int stationNumber) {
-		
+
 		FireStationAlertDTO fireStationAlertDTO = new FireStationAlertDTO();
-		
+
 		if (stationNumber <= 0) {
-			throw new InvalidArgumentException(InvalidArgumentException.typeArg.STATION_NUMBER,stationNumber);
+			throw new InvalidArgumentException(InvalidArgumentException.typeArg.STATION_NUMBER, stationNumber);
 		}
-		
+
 		Set<PersonFireStationAlertDTO> personFireStationAlertDTOs = new HashSet<PersonFireStationAlertDTO>();
-		
+
 		Collection<Person> iterablePerson = alertService.listPersonByStationNumber(stationNumber);
-		
-		if (iterablePerson == null ) {
-			throw new NotFoundException("No one found at this station number :" + stationNumber);
+
+		if (iterablePerson == null) {
+			throw new NotFoundException("No one found at this station number : " + stationNumber);
 		}
-		
+
 		Stream<Person> stream = StreamSupport.stream(iterablePerson.spliterator(), false);
-		
-		stream.forEach(x -> personFireStationAlertDTOs.add(
-				new PersonFireStationAlertDTO(
-						x.getFirstName(), x.getLastName(), x.getAddress(), x.getPhone())));
-		
-		Person[] setPerson = new Person[iterablePerson.size()] ;
+
+		stream.forEach(x -> personFireStationAlertDTOs.add(PersonFireStationAlertDTO.convertToDto(x)));
+
+		Person[] setPerson = new Person[iterablePerson.size()];
 		setPerson = iterablePerson.toArray(setPerson);
-		
+
 		fireStationAlertDTO.setListPerson(personFireStationAlertDTOs);
 		fireStationAlertDTO.setNumberOfAdults(alertService.numberOfAdult(setPerson));
 		fireStationAlertDTO.setNumberOfChildren(alertService.numberOfChildren(setPerson));
-		
+
 		return fireStationAlertDTO;
 	}
 
@@ -72,27 +71,53 @@ public class AlertController {
 
 	@GetMapping("/phoneAlert")
 	public PhoneAlertDTO phoneAlert(@RequestParam("firestation") int firestation_number) {
-		
+
 		PhoneAlertDTO phoneAlertDTO = new PhoneAlertDTO();
-		
+
 		if (firestation_number <= 0) {
-			throw new InvalidArgumentException(InvalidArgumentException.typeArg.STATION_NUMBER,firestation_number);
+			throw new InvalidArgumentException(InvalidArgumentException.typeArg.STATION_NUMBER, firestation_number);
 		}
-		
+
 		Collection<String> iterablePhone = alertService.listPersonPhoneByStationNumber(firestation_number);
-		
-		if (iterablePhone == null ) {
-			throw new NotFoundException("No found person number at this station number :" + firestation_number);
+
+		if (iterablePhone == null) {
+			throw new NotFoundException("No found person number at this station number : " + firestation_number);
 		}
-		
+
 		phoneAlertDTO.setListNumbers(new HashSet<>(iterablePhone));
-		
+
 		return phoneAlertDTO;
 	}
 
 	@GetMapping("/fire")
 	public FireAlertDTO fireAlert(@RequestParam("address") String address) {
-		return null;
+
+		FireAlertDTO fireAlertDTO = new FireAlertDTO();
+
+		Iterable<Person> iterablePerson = alertService.listPersonByAddress(address);
+		if (iterablePerson == null) {
+			throw new NotFoundException("No found person number at this address : " + address);
+		}
+
+		Set<PersonMedicalRecordDTO> personMedicalRecordDTOs = new HashSet<>();
+
+		Stream<Person> stream = StreamSupport.stream(iterablePerson.spliterator(), false);
+		stream.forEach(x -> personMedicalRecordDTOs.add(
+				PersonMedicalRecordDTO.convertToDto(
+						x,
+						alertService.listMedicalRecordByFirstNameANDLastName(x.getFirstName(), x.getLastName()),
+						alertService.ageOfPersonByPerson(x))));
+
+		fireAlertDTO.setListPersonMedicalRecord(personMedicalRecordDTOs);
+
+		Integer stationNumber = alertService.findStationNumberByAddress(address);
+		if (stationNumber == null) {
+			throw new NotFoundException("No found station number at this address : " + address);
+		}
+
+		fireAlertDTO.setStationNumber(stationNumber);
+
+		return fireAlertDTO;
 	}
 
 	@GetMapping("/flood/stations")

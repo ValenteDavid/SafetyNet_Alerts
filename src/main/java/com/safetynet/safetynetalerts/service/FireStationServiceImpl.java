@@ -30,5 +30,10 @@ public class FireStationServiceImpl implements FireStationService{
 	public Iterable<String> findAddressByStationNumber(int stationNumber) {
 		return fireStationDao.findAddressByStationNumber(stationNumber);
 	}
+
+	@Override
+	public Integer findStationNumberByAddress(String Address) {
+		return fireStationDao.findStationNumberByAddress(Address);
+	}
 	
 }

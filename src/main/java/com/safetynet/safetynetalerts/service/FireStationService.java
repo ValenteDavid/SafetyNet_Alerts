@@ -9,5 +9,6 @@ public interface FireStationService {
 	public void delete(String adresse,int stationNumber);
 	
 	public Iterable<String> findAddressByStationNumber(int stationNumber);
+	public Integer findStationNumberByAddress(String Address);
 	
 }

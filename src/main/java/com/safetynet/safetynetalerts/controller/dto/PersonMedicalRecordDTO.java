@@ -18,6 +18,12 @@ public class PersonMedicalRecordDTO {
 		super();
 	}
 	
+	public PersonMedicalRecordDTO(String lastName, String phone) {
+		super();
+		this.lastName = lastName;
+		this.phone = phone;
+	}
+
 	public PersonMedicalRecordDTO(String lastName, String phone, int age, String[] medications, String[] allergies) {
 		super();
 		this.lastName = lastName;
@@ -26,6 +32,7 @@ public class PersonMedicalRecordDTO {
 		this.medications = medications;
 		this.allergies = allergies;
 	}
+	
 	public String getLastName() {
 		return lastName;
 	}
