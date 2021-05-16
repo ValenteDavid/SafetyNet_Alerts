@@ -79,12 +79,13 @@ public class AlertController {
 			throw new InvalidArgumentException(InvalidArgumentException.typeArg.STATION_NUMBER,firestation_number);
 		}
 		
-		Iterable<String> iterablePhone = alertService.listPersonPhoneByStationNumber(firestation_number);
+		Collection<String> iterablePhone = alertService.listPersonPhoneByStationNumber(firestation_number);
 		
 		if (iterablePhone == null ) {
 			throw new NotFoundException("No found person number at this station number :" + firestation_number);
 		}
-		phoneAlertDTO.setListNumbers(null);
+		
+		phoneAlertDTO.setListNumbers(new HashSet<>(iterablePhone));
 		
 		return phoneAlertDTO;
 	}

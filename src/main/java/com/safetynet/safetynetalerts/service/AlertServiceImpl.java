@@ -98,10 +98,10 @@ public class AlertServiceImpl implements AlertService {
 	}
 
 	@Override
-	public Iterable<String> listPersonPhoneByStationNumber(int stationNumber) {
+	public Collection<String> listPersonPhoneByStationNumber(int stationNumber) {
 		Set<String> setPhone = new HashSet<>();
 		Stream<Person> stream = listPersonByStationNumber(stationNumber).stream();
-		stream.forEach(x-> setPhone.add(x.getAddress()));
+		stream.forEach(x-> setPhone.add(x.getPhone()));
 		return setPhone;
 	}
 

@@ -1,6 +1,7 @@
 package integration;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,5 +44,19 @@ public class AlertControllerTest {
 				.andExpect(jsonPath("$.listPerson[*].lastName", IsAnything.anything()))
 				.andExpect(jsonPath("$.listPerson[*].address", IsAnything.anything()))
 				.andExpect(jsonPath("$.listPerson[*].phone", IsAnything.anything()));
+	}
+
+	@Test
+	public void testphoneAlert_ReturnContent_ValidArgument() throws Exception {
+		String firestation = "2";
+
+		mockMvc.perform(get("/phoneAlert")
+				.param("firestation", firestation))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.listNumbers[*]", containsInAnyOrder(
+						"841-874-7512",
+						"841-874-7878",
+						"841-874-7458",
+						"841-874-6513")));
 	}
 }
