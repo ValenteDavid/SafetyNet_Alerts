@@ -1,17 +1,21 @@
 package com.safetynet.safetynetalerts;
 
+import static org.hamcrest.CoreMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.safetynet.safetynetalerts.controller.AlertController;
+import com.safetynet.safetynetalerts.model.Person;
 import com.safetynet.safetynetalerts.service.AlertService;
 
 @WebMvcTest(controllers = AlertController.class)
@@ -25,18 +29,29 @@ public class AlertControllerTest {
 
 	@Test
 	public void testfindPersonInfoByFireStationNumber_Status_ValidArgument() throws Exception {
-		String param = "1";
+		String stationNumber = "1";
+		when(alertService.listPersonByStationNumber(1)).thenReturn(Mockito.<Person>anyCollection());
+		
 		mockMvc.perform(get("/firestation")
-				.param("stationNumber", param))
+				.param("stationNumber", stationNumber))
 				.andExpect(status().isOk());
 	}
 
-	@ParameterizedTest(name = "param : {0}")
+	@ParameterizedTest(name = "stationNumber : {0}")
 	@ValueSource(strings = { "aaa", "-1" })
-	public void testfindPersonInfoByFireStationNumber_Status_InvalidFormatArgument(String param) throws Exception {
+	public void testfindPersonInfoByFireStationNumber_Status_InvalidFormatArgument(String stationNumber) throws Exception {
 		mockMvc.perform(get("/firestation")
-				.param("stationNumber", param))
+				.param("stationNumber", stationNumber))
 				.andExpect(status().isBadRequest());
 	}
-
+	
+	@Test
+	public void testfindPersonInfoByFireStationNumber_Status_NotFound() throws Exception {
+		String stationNumber = "1";
+		when(alertService.listPersonByStationNumber(1)).thenReturn(null);
+		
+		mockMvc.perform(get("/firestation")
+				.param("stationNumber", stationNumber))
+				.andExpect(status().isNotFound());
+	}
 }
