@@ -34,9 +34,11 @@ public class SafetyNetAlertsApplication {
 
 			File fileLoad = new File("src/main/resources/data.json");
 			File fileUse = new File("src/main/resources/data-test.json");
-			if (fileUse.exists()) {fileUse.delete();}
+			if (fileUse.exists()) {
+				fileUse.delete();
+			}
 			Files.copy(fileLoad.toPath(), fileUse.toPath());
-			
+
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode jsonNode = mapper.readTree(fileUse);
 			ArrayNode arrayNode;

@@ -1,5 +1,7 @@
 package com.safetynet.safetynetalerts.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,8 +9,8 @@ import com.safetynet.safetynetalerts.model.FireStation;
 import com.safetynet.safetynetalerts.repository.FireStationDao;
 
 @Service
-public class FireStationServiceImpl implements FireStationService{
-	
+public class FireStationServiceImpl implements FireStationService {
+
 	@Autowired
 	private FireStationDao fireStationDao;
 
@@ -27,7 +29,7 @@ public class FireStationServiceImpl implements FireStationService{
 	}
 
 	@Override
-	public Iterable<String> findAddressByStationNumber(int stationNumber) {
+	public List<String> findAddressByStationNumber(int stationNumber) {
 		return fireStationDao.findAddressByStationNumber(stationNumber);
 	}
 
@@ -35,5 +37,5 @@ public class FireStationServiceImpl implements FireStationService{
 	public Integer findStationNumberByAddress(String Address) {
 		return fireStationDao.findStationNumberByAddress(Address);
 	}
-	
+
 }

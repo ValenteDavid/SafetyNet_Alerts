@@ -11,8 +11,8 @@ import com.safetynet.safetynetalerts.model.Person;
 import com.safetynet.safetynetalerts.service.PersonService;
 
 @RestController
-public class PersonController{
-	
+public class PersonController {
+
 	private static final String path = "/person";
 
 	@Autowired
@@ -27,9 +27,9 @@ public class PersonController{
 	public Person update(@RequestBody Person person) {
 		return null;
 	}
-	
-	@DeleteMapping(path+"/{firstName}&{lastName}")
+
+	@DeleteMapping(path + "/{firstName}&{lastName}")
 	public void delete(String firstName, String lastName) {
 	}
-	
+
 }

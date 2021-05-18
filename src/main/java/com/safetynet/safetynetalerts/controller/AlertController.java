@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -42,24 +43,19 @@ public class AlertController {
 			throw new InvalidArgumentException(InvalidArgumentException.typeArg.STATION_NUMBER, stationNumber);
 		}
 
-		Set<PersonFireStationAlertDTO> personFireStationAlertDTOs = new HashSet<PersonFireStationAlertDTO>();
+		List<Person> listPersons = alertService.listPersonByStationNumber(stationNumber);
 
-		Collection<Person> iterablePerson = alertService.listPersonByStationNumber(stationNumber);
-
-		if (iterablePerson == null) {
+		if (listPersons == null) {
 			throw new NotFoundException("No one found at this station number : " + stationNumber);
 		}
 
-		Stream<Person> stream = StreamSupport.stream(iterablePerson.spliterator(), false);
-
-		stream.forEach(x -> personFireStationAlertDTOs.add(PersonFireStationAlertDTO.convertToDto(x)));
-
-		Person[] setPerson = new Person[iterablePerson.size()];
-		setPerson = iterablePerson.toArray(setPerson);
+		List<PersonFireStationAlertDTO> personFireStationAlertDTOs = listPersons.stream()
+				.map(person -> PersonFireStationAlertDTO.convertToDto(person))
+				.collect(Collectors.toList());
 
 		fireStationAlertDTO.setListPerson(personFireStationAlertDTOs);
-		fireStationAlertDTO.setNumberOfAdults(alertService.numberOfAdult(setPerson));
-		fireStationAlertDTO.setNumberOfChildren(alertService.numberOfChildren(setPerson));
+		fireStationAlertDTO.setNumberOfAdults(alertService.numberOfAdult(listPersons));
+		fireStationAlertDTO.setNumberOfChildren(alertService.numberOfChildren(listPersons));
 
 		return fireStationAlertDTO;
 	}

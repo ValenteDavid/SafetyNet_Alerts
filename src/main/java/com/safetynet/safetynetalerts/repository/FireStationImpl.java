@@ -1,45 +1,41 @@
 package com.safetynet.safetynetalerts.repository;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
 import com.safetynet.safetynetalerts.model.FireStation;
 
 @Repository
-public class FireStationImpl implements FireStationDao{
+public class FireStationImpl implements FireStationDao {
 
 	public static List<FireStation> fireStations;
-	
+
 	@Override
-	public Iterable<String> findAddressByStationNumber(int station_number) {
-		Set<String> setAddress = new HashSet<>();
-		
-		Stream<FireStation> stream = StreamSupport.stream(fireStations.spliterator(), false);
-		
-		stream.filter(x -> x.getStationNumber()==station_number )
-		.forEach(x -> setAddress.add(x.getAddress()));
-		return setAddress;
+	public List<String> findAddressByStationNumber(int station_number) {
+
+		List<String> listAddress = fireStations.stream()
+				.filter(fireStation -> fireStation.getStationNumber() == station_number)
+				.map(fireStation -> fireStation.getAddress())
+				.collect(Collectors.toList());
+
+		return listAddress;
 	}
+
 	@Override
 	public Integer findStationNumberByAddress(String address) {
-		Integer stationNumber=null;
-		
-		Stream<FireStation> stream = StreamSupport.stream(fireStations.spliterator(), false);
-		
-		stationNumber = 
-				stream.filter(x -> x.getAddress().equals(address))
+
+		Integer stationNumber = fireStations.stream()
+				.filter(x -> x.getAddress().equals(address))
 				.findFirst()
 				.get().getStationNumber();
+
 		return stationNumber;
 	}
 
 	@Override
-	public Iterable<FireStation> findAll() {
+	public List<FireStation> findAll() {
 		return null;
 	}
 
@@ -55,6 +51,6 @@ public class FireStationImpl implements FireStationDao{
 
 	@Override
 	public void delete(FireStation fireStation) {
-		
+
 	}
 }

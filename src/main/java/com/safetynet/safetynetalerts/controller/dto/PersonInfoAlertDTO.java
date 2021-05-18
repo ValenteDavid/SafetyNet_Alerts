@@ -82,9 +82,9 @@ public class PersonInfoAlertDTO {
 		return new PersonInfoAlertDTO(
 				person.getLastName(),
 				person.getAddress() + " " + person.getZip() + " " + person.getCity(),
-				age, 
-				person.getEmail(), 
-				medicalRecord.getMedications(), 
+				age,
+				person.getEmail(),
+				medicalRecord.getMedications(),
 				medicalRecord.getAllergies());
 	}
 
@@ -93,5 +93,5 @@ public class PersonInfoAlertDTO {
 		return "PersonInfoAlertDTO [lastName=" + lastName + ", address=" + address + ", age=" + age + ", email=" + email
 				+ ", medications=" + Arrays.toString(medications) + ", allergies=" + Arrays.toString(allergies) + "]";
 	}
-	
+
 }

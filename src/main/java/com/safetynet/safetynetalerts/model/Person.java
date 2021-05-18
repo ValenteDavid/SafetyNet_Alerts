@@ -4,17 +4,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Person {
-	
+
 	private String firstName;
 	private String lastName;
-	
+
 	private String address;
-	
+
 	private String city;
 	private Long zip;
 	private String phone;
 	private String email;
-	
+
 	public Person() {
 	}
 
@@ -23,7 +23,7 @@ public class Person {
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
-	
+
 	public Person(String firstName, String lastName, String address, String city, Long zip, String phone,
 			String email) {
 		super();
@@ -97,7 +97,5 @@ public class Person {
 		return "Person [firstName=" + firstName + ", lastName=" + lastName + ", address=" + address
 				+ ", city=" + city + ", zip=" + zip + ", phone=" + phone + ", email=" + email + "]";
 	}
-	
-	
 
 }
