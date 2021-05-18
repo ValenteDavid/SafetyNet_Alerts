@@ -1,11 +1,7 @@
 package com.safetynet.safetynetalerts.repository;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +18,7 @@ public class PersonDaoImpl implements PersonDao {
 	}
 
 	@Override
-	public Iterable<Person> findAll() {
+	public List<Person> findAll() {
 		return persons;
 	}
 
@@ -42,12 +38,13 @@ public class PersonDaoImpl implements PersonDao {
 	}
 
 	@Override
-	public Collection<Person> findAllByAddress(String address) {
-		Set<Person> setPerson = new HashSet<>();
+	public List<Person> findAllByAddress(String address) {
 
-		Stream<Person> stream = StreamSupport.stream(persons.spliterator(), false);
-		stream.filter(x -> x.getAddress().contentEquals(address))
-				.forEach(x -> setPerson.add(x));
-		return setPerson;
+		List<Person> listPersons = persons.stream()
+				.filter(person -> person.getAddress().contentEquals(address))
+				.distinct()
+				.collect(Collectors.toList());
+
+		return listPersons;
 	}
 }

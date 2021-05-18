@@ -1,25 +1,18 @@
 package com.safetynet.safetynetalerts.service;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.safetynet.safetynetalerts.model.MedicalRecord;
 import com.safetynet.safetynetalerts.model.Person;
+import com.safetynet.safetynetalerts.model.PersonType;
 
 @Service
 public class AlertServiceImpl implements AlertService {
@@ -32,79 +25,110 @@ public class AlertServiceImpl implements AlertService {
 	private MedicalRecordService medicalRecordService;
 
 	@Override
-	public Collection<Person> listPersonByStationNumber(int stationNumber) {
-		Set<Person> iterablePerson = new HashSet<Person>();
+	public List<Person> listPersonByStationNumber(int stationNumber) {
 
-		Iterable<String> iterableAddress = fireStationService.findAddressByStationNumber(stationNumber);
+		List<Person> listPersons = fireStationService.findAddressByStationNumber(stationNumber).stream()
+				.map(address -> personService.findAllByAddress(address))
+				.flatMap(listAll -> listAll.stream())
+				.collect(Collectors.toList());
 
-		Stream<String> stream = StreamSupport.stream(iterableAddress.spliterator(), false);
-
-		stream.forEach(x -> iterablePerson.addAll(personService.findAllByAddress(x)));
-
-		return iterablePerson;
+		return listPersons;
 	}
 
 	@Override
-	public Iterable<Person> listPersonByAddress(String address) {
+	public List<Person> listPersonByAddress(String address) {
 		return personService.findAllByAddress(address);
 	}
 
 	@Override
-	public Collection<Person> listChildren(Person... persons) {
-		List<Person> listPerson = Arrays.asList(persons);
-		List<Person> listChildren = new ArrayList<>();
+	public int ageOfPersonByBirthdate(Date birthdate) {
+		Calendar birthdateCalendar = Calendar.getInstance();
+		birthdateCalendar.setTime(birthdate);
 
-		Stream<Person> stream = listPerson.stream();
-		stream.filter(x -> calculDateMaxChildren(x).compareTo(Calendar.getInstance().toInstant()) > 0)
-				.forEach(x -> listChildren.add(x));
+		LocalDate birthdateLocale = LocalDate.of(
+				birthdateCalendar.get(Calendar.YEAR),
+				birthdateCalendar.get(Calendar.MONTH) + 1,
+				birthdateCalendar.get(Calendar.DATE));
+		LocalDate nowLocale = LocalDate.now();
+
+		int age = Period.between(birthdateLocale, nowLocale).getYears();
+
+		return age;
+	}
+
+	@Override
+	public int ageOfPersonByPerson(Person person) {
+		Date birthdate = medicalRecordService.findByFirstNameANDLastName(
+				person.getFirstName(),
+				person.getLastName()).getBirthdate();
+		int age = ageOfPersonByBirthdate(birthdate);
+		return age;
+	}
+
+	private PersonType getPersonType(Person person) {
+
+		int age = ageOfPersonByPerson(person);
+
+		if (age <= PersonType.CHILD.getMaxAge()) {
+			return PersonType.CHILD;
+		} else if (age <= PersonType.ADULT.getMaxAge()) {
+			return PersonType.ADULT;
+		}
+
+		return null;
+	}
+
+	private boolean isChildren(Person person) {
+		return getPersonType(person) == PersonType.CHILD;
+	}
+
+	private boolean isAdult(Person person) {
+		return getPersonType(person) == PersonType.ADULT;
+	}
+
+	@Override
+	public List<Person> listChildren(List<Person> listPersons) {
+
+		List<Person> listChildren = listPersons.stream()
+				.filter(person -> isChildren(person))
+				.collect(Collectors.toList());
 
 		return listChildren;
 	}
 
 	@Override
-	public Collection<Person> listAdult(Person... persons) {
-		List<Person> listPerson = Arrays.asList(persons);
-		List<Person> listAdult = new ArrayList<>();
+	public List<Person> listAdult(List<Person> listPersons) {
 
-		Stream<Person> stream = listPerson.stream();
-		stream.filter(x -> calculDateMaxChildren(x).compareTo(Calendar.getInstance().toInstant()) <= 0)
-				.forEach(x -> listAdult.add(x));
+		List<Person> listAdult = listPersons.stream()
+				.filter(person -> isAdult(person))
+				.collect(Collectors.toList());
 
 		return listAdult;
 	}
 
 	@Override
-	public int numberOfChildren(Person... persons) {
-		return (listChildren(persons)).size();
+	public int numberOfChildren(List<Person> listPersons) {
+		return (listChildren(listPersons)).size();
 	}
 
 	@Override
-	public int numberOfAdult(Person... persons) {
-		return (listAdult(persons)).size();
+	public int numberOfAdult(List<Person> listPersons) {
+		return (listAdult(listPersons)).size();
 	}
 
 	@Override
-	public Iterable<String> listEmail(Person... persons) {
+	public List<String> listEmail(List<Person> listPersons) {
 		return null;
 	}
 
-	private Instant calculDateMaxChildren(Person person) {
-		Date birthdate = medicalRecordService.findByFirstNameANDLastName(person.getFirstName(), person.getLastName())
-				.getBirthdate();
-
-		Calendar birthdateCalendar = GregorianCalendar.getInstance();
-		birthdateCalendar.setTime(birthdate);
-		birthdateCalendar.add(Calendar.YEAR, 19);
-		Instant birthdateInstant = birthdateCalendar.toInstant();
-
-		return birthdateInstant;
-	}
-
 	@Override
-	public Collection<String> listPersonPhoneByStationNumber(int stationNumber) {
-		Set<String> setPhone = new HashSet<>();
-		Stream<Person> stream = listPersonByStationNumber(stationNumber).stream();
-		stream.forEach(x -> setPhone.add(x.getPhone()));
+	public List<String> listPersonPhoneByStationNumber(int stationNumber) {
+
+		List<String> setPhone = listPersonByStationNumber(stationNumber).stream()
+				.map(person -> person.getPhone())
+				.distinct()
+				.collect(Collectors.toList());
+
 		return setPhone;
 	}
 
@@ -116,31 +140,6 @@ public class AlertServiceImpl implements AlertService {
 	@Override
 	public MedicalRecord listMedicalRecordByFirstNameANDLastName(String firstName, String lastName) {
 		return medicalRecordService.findByFirstNameANDLastName(firstName, lastName);
-	}
-
-	@Override
-	public int ageOfPersonByBirthdate(Date birthdate) {
-		Calendar birthdateCalendar = Calendar.getInstance();
-		birthdateCalendar.setTime(birthdate);
-		int year = birthdateCalendar.get(Calendar.YEAR);
-		int month = birthdateCalendar.get(Calendar.MONTH) + 1;
-		int date = birthdateCalendar.get(Calendar.DATE);
-		
-		LocalDate l1 = LocalDate.of(year, month, date);
-		LocalDate now1 = LocalDate.now();
-		Period diff1 = Period.between(l1, now1);
-		
-		int age = diff1.getYears();
-
-		return age;
-	}
-
-	@Override
-	public int ageOfPersonByPerson(Person person) {
-		Date birthdate = medicalRecordService.findByFirstNameANDLastName(person.getFirstName(), person.getLastName())
-				.getBirthdate();
-		int age = ageOfPersonByBirthdate(birthdate);
-		return age;
 	}
 
 }

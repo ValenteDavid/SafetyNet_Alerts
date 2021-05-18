@@ -1,14 +1,21 @@
 package com.safetynet.safetynetalerts.repository;
 
+import java.util.List;
+
 import com.safetynet.safetynetalerts.model.FireStation;
 
 public interface FireStationDao {
-	
-	public Iterable<String> findAddressByStationNumber(int station_number);
+
+	public List<String> findAddressByStationNumber(int station_number);
+
 	public Integer findStationNumberByAddress(String Address);
-	public Iterable<FireStation> findAll();
+
+	public List<FireStation> findAll();
+
 	public FireStation save(FireStation fireStation);
-	public FireStation update (FireStation fireStation);
+
+	public FireStation update(FireStation fireStation);
+
 	public void delete(FireStation fireStation);
-	
+
 }

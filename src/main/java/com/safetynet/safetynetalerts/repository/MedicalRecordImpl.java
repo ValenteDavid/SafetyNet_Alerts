@@ -10,17 +10,17 @@ import com.safetynet.safetynetalerts.model.MedicalRecord;
 public class MedicalRecordImpl implements MedicalRecordDao {
 
 	public static List<MedicalRecord> medicalRecords;
-	
+
 	@Override
 	public MedicalRecord findByFirstNameANDLastName(String firstName, String lastName) {
 		return medicalRecords.stream()
-				.filter(x-> firstName.equals(x.getFirstName()))
-				.filter(x-> lastName.equals(x.getLastName()))
+				.filter(x -> firstName.equals(x.getFirstName()))
+				.filter(x -> lastName.equals(x.getLastName()))
 				.findFirst().orElse(null);
 	}
 
 	@Override
-	public Iterable<MedicalRecord> findAll() {
+	public List<MedicalRecord> findAll() {
 		return null;
 	}
 
@@ -36,7 +36,7 @@ public class MedicalRecordImpl implements MedicalRecordDao {
 
 	@Override
 	public void delete(MedicalRecord medicalRecord) {
-		
+
 	}
 
 }

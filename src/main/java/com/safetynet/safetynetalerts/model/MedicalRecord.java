@@ -59,7 +59,7 @@ public class MedicalRecord {
 			this.birthdate = new SimpleDateFormat("dd/MM/yyyy").parse(birthdate);
 		} catch (ParseException e) {
 			e.printStackTrace();
-		}  
+		}
 	}
 
 	public String[] getMedications() {

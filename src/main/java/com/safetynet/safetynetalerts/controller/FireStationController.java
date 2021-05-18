@@ -12,10 +12,10 @@ import com.safetynet.safetynetalerts.model.FireStation;
 import com.safetynet.safetynetalerts.service.FireStationServiceImpl;
 
 @RestController
-public class FireStationController{
+public class FireStationController {
 
 	private static final String path = "/firestation";
-	
+
 	@Autowired
 	private FireStationServiceImpl fireStationService;
 
@@ -29,8 +29,8 @@ public class FireStationController{
 		return null;
 	}
 
-	@DeleteMapping(path +"/{address}&{stationNumber}")
+	@DeleteMapping(path + "/{address}&{stationNumber}")
 	public void delete(@PathVariable("address") String adresse, @PathVariable("stationNumber") int stationNumber) {
 	}
-	
+
 }

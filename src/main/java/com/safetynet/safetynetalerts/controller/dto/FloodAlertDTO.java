@@ -1,41 +1,31 @@
 package com.safetynet.safetynetalerts.controller.dto;
 
-import java.util.Set;
+import java.util.Map;
 
 public class FloodAlertDTO {
 
-	private Set<PersonMedicalRecordDTO> setPerson;
-	private String address;
+	private Map<String,PersonMedicalRecordDTO> mapAddressPerson;
 
 	public FloodAlertDTO() {
 		super();
 	}
 
-	public FloodAlertDTO(Set<PersonMedicalRecordDTO> setPerson, String address) {
+	public FloodAlertDTO(Map<String, PersonMedicalRecordDTO> mapAddressPerson) {
 		super();
-		this.setPerson = setPerson;
-		this.address = address;
+		this.mapAddressPerson = mapAddressPerson;
 	}
 
-	public Set<PersonMedicalRecordDTO> getSetPerson() {
-		return setPerson;
+	public Map<String, PersonMedicalRecordDTO> getMapAddressPerson() {
+		return mapAddressPerson;
 	}
 
-	public void setListPerson(Set<PersonMedicalRecordDTO> setPerson) {
-		this.setPerson = setPerson;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
+	public void setMapAddressPerson(Map<String, PersonMedicalRecordDTO> mapAddressPerson) {
+		this.mapAddressPerson = mapAddressPerson;
 	}
 
 	@Override
 	public String toString() {
-		return "FloodAlertDTO [setPerson=" + setPerson + ", address=" + address + "]";
+		return "FloodAlertDTO [mapAddressPerson=" + mapAddressPerson + "]";
 	}
 
 }

@@ -12,10 +12,10 @@ import com.safetynet.safetynetalerts.model.MedicalRecord;
 import com.safetynet.safetynetalerts.service.MedicalRecordService;
 
 @RestController
-public class MedicalRecordController{
+public class MedicalRecordController {
 
 	private static final String path = "/medicalRecord";
-	
+
 	@Autowired
 	private MedicalRecordService medicalRecordService;
 
@@ -29,9 +29,9 @@ public class MedicalRecordController{
 		return null;
 	}
 
-	@DeleteMapping(path +"/{address}&{stationNumber}")
+	@DeleteMapping(path + "/{address}&{stationNumber}")
 	public void delete(@PathVariable String firstName, @PathVariable String lastName) {
-		
+
 	}
-	
+
 }

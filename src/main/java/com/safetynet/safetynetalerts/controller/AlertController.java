@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -38,28 +39,21 @@ public class AlertController {
 
 		FireStationAlertDTO fireStationAlertDTO = new FireStationAlertDTO();
 
-		if (stationNumber <= 0) {
-			throw new InvalidArgumentException(InvalidArgumentException.typeArg.STATION_NUMBER, stationNumber);
-		}
+		validStationNumber(stationNumber);
 
-		Set<PersonFireStationAlertDTO> personFireStationAlertDTOs = new HashSet<PersonFireStationAlertDTO>();
+		List<Person> listPersons = alertService.listPersonByStationNumber(stationNumber);
 
-		Collection<Person> iterablePerson = alertService.listPersonByStationNumber(stationNumber);
-
-		if (iterablePerson == null) {
+		if (listPersons == null) {
 			throw new NotFoundException("No one found at this station number : " + stationNumber);
 		}
 
-		Stream<Person> stream = StreamSupport.stream(iterablePerson.spliterator(), false);
-
-		stream.forEach(x -> personFireStationAlertDTOs.add(PersonFireStationAlertDTO.convertToDto(x)));
-
-		Person[] setPerson = new Person[iterablePerson.size()];
-		setPerson = iterablePerson.toArray(setPerson);
+		List<PersonFireStationAlertDTO> personFireStationAlertDTOs = listPersons.stream()
+				.map(person -> PersonFireStationAlertDTO.convertToDto(person))
+				.collect(Collectors.toList());
 
 		fireStationAlertDTO.setListPerson(personFireStationAlertDTOs);
-		fireStationAlertDTO.setNumberOfAdults(alertService.numberOfAdult(setPerson));
-		fireStationAlertDTO.setNumberOfChildren(alertService.numberOfChildren(setPerson));
+		fireStationAlertDTO.setNumberOfAdults(alertService.numberOfAdult(listPersons));
+		fireStationAlertDTO.setNumberOfChildren(alertService.numberOfChildren(listPersons));
 
 		return fireStationAlertDTO;
 	}
@@ -74,10 +68,8 @@ public class AlertController {
 
 		PhoneAlertDTO phoneAlertDTO = new PhoneAlertDTO();
 
-		if (firestation_number <= 0) {
-			throw new InvalidArgumentException(InvalidArgumentException.typeArg.STATION_NUMBER, firestation_number);
-		}
-
+		validStationNumber(firestation_number);
+		
 		Collection<String> iterablePhone = alertService.listPersonPhoneByStationNumber(firestation_number);
 
 		if (iterablePhone == null) {
@@ -135,5 +127,11 @@ public class AlertController {
 	@GetMapping("/communityEmail")
 	public CommunityEmailAlertDTO findCommunityEmailByCity(@RequestParam("city") String city) {
 		return null;
+	}
+	
+	private void validStationNumber(int stationNumber) {
+		if (stationNumber <= 0) {
+			throw new InvalidArgumentException("The station number cannot be less than or equal to 0 : " + stationNumber);
+		}
 	}
 }

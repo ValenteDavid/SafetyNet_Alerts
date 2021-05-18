@@ -15,7 +15,6 @@ public class ChildAlertDTO {
 		this.setChildren = setChildren;
 	}
 
-	
 	public Set<PersonChildAlertDTO> getSetChildren() {
 		return setChildren;
 	}

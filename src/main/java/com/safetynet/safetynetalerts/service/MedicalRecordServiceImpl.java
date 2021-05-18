@@ -1,5 +1,7 @@
 package com.safetynet.safetynetalerts.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,7 +9,7 @@ import com.safetynet.safetynetalerts.model.MedicalRecord;
 import com.safetynet.safetynetalerts.repository.MedicalRecordDao;
 
 @Service
-public class MedicalRecordServiceImpl implements MedicalRecordService{
+public class MedicalRecordServiceImpl implements MedicalRecordService {
 
 	@Autowired
 	private MedicalRecordDao medicalRecordDao;
@@ -18,7 +20,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
 	}
 
 	@Override
-	public Iterable<MedicalRecord> findAll() {
+	public List<MedicalRecord> findAll() {
 		return null;
 	}
 
@@ -34,9 +36,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
 
 	@Override
 	public void delete(MedicalRecord medicalRecord) {
-		
+
 	}
 
-	
-	
 }

@@ -29,8 +29,8 @@ public class AlertControllerTest {
 	@Test
 	public void testfindPersonInfoByFireStationNumber_Status_ValidArgument() throws Exception {
 		String stationNumber = "1";
-		when(alertService.listPersonByStationNumber(1)).thenReturn(Mockito.<Person>anyCollection());
-		
+		when(alertService.listPersonByStationNumber(1)).thenReturn(Mockito.<Person>anyList());
+
 		mockMvc.perform(get("/firestation")
 				.param("stationNumber", stationNumber))
 				.andExpect(status().isOk());
@@ -38,17 +38,18 @@ public class AlertControllerTest {
 
 	@ParameterizedTest(name = "stationNumber : {0}")
 	@ValueSource(strings = { "aaa", "-1" })
-	public void testfindPersonInfoByFireStationNumber_Status_InvalidFormatArgument(String stationNumber) throws Exception {
+	public void testfindPersonInfoByFireStationNumber_Status_InvalidFormatArgument(String stationNumber)
+			throws Exception {
 		mockMvc.perform(get("/firestation")
 				.param("stationNumber", stationNumber))
 				.andExpect(status().isBadRequest());
 	}
-	
+
 	@Test
 	public void testfindPersonInfoByFireStationNumber_Status_NotFound() throws Exception {
 		String stationNumber = "1";
 		when(alertService.listPersonByStationNumber(1)).thenReturn(null);
-		
+
 		mockMvc.perform(get("/firestation")
 				.param("stationNumber", stationNumber))
 				.andExpect(status().isNotFound());
@@ -57,8 +58,8 @@ public class AlertControllerTest {
 	@Test
 	public void testphoneAlert_Status_ValidArgument() throws Exception {
 		String firestation = "1";
-		when(alertService.listPersonPhoneByStationNumber(1)).thenReturn(Mockito.<String>anyCollection());
-		
+		when(alertService.listPersonPhoneByStationNumber(1)).thenReturn(Mockito.<String>anyList());
+
 		mockMvc.perform(get("/phoneAlert")
 				.param("firestation", firestation))
 				.andExpect(status().isOk());
@@ -71,32 +72,32 @@ public class AlertControllerTest {
 				.param("firestation", firestation))
 				.andExpect(status().isBadRequest());
 	}
-	
+
 	@Test
 	public void testphoneAlert_Status_NotFound() throws Exception {
 		String firestation = "1";
 		when(alertService.listPersonPhoneByStationNumber(1)).thenReturn(null);
-		
+
 		mockMvc.perform(get("/phoneAlert")
 				.param("firestation", firestation))
 				.andExpect(status().isNotFound());
 	}
-	
+
 	@Test
 	public void testfireAlert_Status_ValidArgument() throws Exception {
 		String address = "anyAddress";
-		when(alertService.listPersonByAddress(address)).thenReturn(Mockito.<Person>anyIterable());
-		
+		when(alertService.listPersonByAddress(address)).thenReturn(Mockito.<Person>anyList());
+
 		mockMvc.perform(get("/fire")
 				.param("address", address))
 				.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void testfireAlert_Status_NotFound() throws Exception {
 		String address = "anyAddress";
 		when(alertService.listPersonByAddress(address)).thenReturn(null);
-		
+
 		mockMvc.perform(get("/fire")
 				.param("address", address))
 				.andExpect(status().isNotFound());

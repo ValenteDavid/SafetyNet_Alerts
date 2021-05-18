@@ -1,36 +1,42 @@
 package com.safetynet.safetynetalerts.controller.dto;
 
-import java.util.Set;
+import java.util.List;
 
 public class FireStationAlertDTO {
 
-	private Set<PersonFireStationAlertDTO> setPerson;
-	
+	private List<PersonFireStationAlertDTO> listPersons;
+
 	private int numberOfAdults;
 	private int numberOfChildren;
-	
-	public Set<PersonFireStationAlertDTO> getListPerson() {
-		return setPerson;
+
+	public List<PersonFireStationAlertDTO> getListPerson() {
+		return listPersons;
 	}
-	public void setListPerson(Set<PersonFireStationAlertDTO> setPerson) {
-		this.setPerson = setPerson;
+
+	public void setListPerson(List<PersonFireStationAlertDTO> listPersons) {
+		this.listPersons = listPersons;
 	}
+
 	public int getNumberOfAdults() {
 		return numberOfAdults;
 	}
+
 	public void setNumberOfAdults(int numberOfAdults) {
 		this.numberOfAdults = numberOfAdults;
 	}
+
 	public int getNumberOfChildren() {
 		return numberOfChildren;
 	}
+
 	public void setNumberOfChildren(int numberOfChildren) {
 		this.numberOfChildren = numberOfChildren;
 	}
+
 	@Override
 	public String toString() {
-		return "FireStationAlertDTO [setPerson=" + setPerson + ", numberOfAdults=" + numberOfAdults
+		return "FireStationAlertDTO [listPersons=" + listPersons + ", numberOfAdults=" + numberOfAdults
 				+ ", numberOfChildren=" + numberOfChildren + "]";
 	}
-	
+
 }
