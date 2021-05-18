@@ -14,12 +14,14 @@ public interface AlertService {
 	public List<Person> listAdult(List<Person> listPersons);
 	
 	public int ageOfPersonByBirthdate(Date birthdate);
+
 	public int ageOfPersonByPerson(Person person);
 	public int numberOfChildren(List<Person> listPersons);
 	public int numberOfAdult(List<Person> listPersons);
 	
 	public List<String> listEmail(List<Person> listPersons);
 	public List<String> listPersonPhoneByStationNumber(int stationNumber);
+
 	public Integer findStationNumberByAddress(String Address);
 	public MedicalRecord listMedicalRecordByFirstNameANDLastName(String firstName, String lastName);
 	public List<String> findAddressByStationNumber(int stationNumber);
