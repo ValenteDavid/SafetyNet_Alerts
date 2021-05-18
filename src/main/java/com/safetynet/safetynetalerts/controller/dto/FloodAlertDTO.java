@@ -1,25 +1,26 @@
 package com.safetynet.safetynetalerts.controller.dto;
 
+import java.util.List;
 import java.util.Map;
 
 public class FloodAlertDTO {
 
-	private Map<String,PersonMedicalRecordDTO> mapAddressPerson;
+	private Map<String,List<PersonMedicalRecordDTO>> mapAddressPerson;
 
 	public FloodAlertDTO() {
 		super();
 	}
 
-	public FloodAlertDTO(Map<String, PersonMedicalRecordDTO> mapAddressPerson) {
+	public FloodAlertDTO(Map<String, List<PersonMedicalRecordDTO>> mapAddressPerson) {
 		super();
 		this.mapAddressPerson = mapAddressPerson;
 	}
 
-	public Map<String, PersonMedicalRecordDTO> getMapAddressPerson() {
+	public Map<String, List<PersonMedicalRecordDTO>> getMapAddressPerson() {
 		return mapAddressPerson;
 	}
 
-	public void setMapAddressPerson(Map<String, PersonMedicalRecordDTO> mapAddressPerson) {
+	public void setMapAddressPerson(Map<String, List<PersonMedicalRecordDTO>> mapAddressPerson) {
 		this.mapAddressPerson = mapAddressPerson;
 	}
 

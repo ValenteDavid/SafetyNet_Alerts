@@ -142,4 +142,9 @@ public class AlertServiceImpl implements AlertService {
 		return medicalRecordService.findByFirstNameANDLastName(firstName, lastName);
 	}
 
+	@Override
+	public List<String> findAddressByStationNumber(int stationNumber) {
+		return fireStationService.findAddressByStationNumber(stationNumber);
+	}
+
 }

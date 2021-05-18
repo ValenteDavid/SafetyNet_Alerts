@@ -1,8 +1,10 @@
 package com.safetynet.safetynetalerts.controller;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -69,14 +71,14 @@ public class AlertController {
 		PhoneAlertDTO phoneAlertDTO = new PhoneAlertDTO();
 
 		validStationNumber(firestation_number);
-		
-		Collection<String> iterablePhone = alertService.listPersonPhoneByStationNumber(firestation_number);
 
-		if (iterablePhone == null) {
+		List<String> listPhone = alertService.listPersonPhoneByStationNumber(firestation_number);
+
+		if (listPhone == null) {
 			throw new NotFoundException("No found person number at this station number : " + firestation_number);
 		}
 
-		phoneAlertDTO.setListNumbers(new HashSet<>(iterablePhone));
+		phoneAlertDTO.setListNumbers(listPhone);
 
 		return phoneAlertDTO;
 	}
@@ -86,21 +88,21 @@ public class AlertController {
 
 		FireAlertDTO fireAlertDTO = new FireAlertDTO();
 
-		Iterable<Person> iterablePerson = alertService.listPersonByAddress(address);
-		if (iterablePerson == null) {
+		List<Person> listPersons = alertService.listPersonByAddress(address);
+		if (listPersons == null) {
 			throw new NotFoundException("No found person number at this address : " + address);
 		}
 
-		Set<PersonMedicalRecordDTO> personMedicalRecordDTOs = new HashSet<>();
+		List<PersonMedicalRecordDTO> personMedicalRecordDTOs = listPersons.stream()
+				.map(person -> PersonMedicalRecordDTO.convertToDto(
+						person,
+						alertService.listMedicalRecordByFirstNameANDLastName(person.getFirstName(),
+								person.getLastName()),
+						alertService.ageOfPersonByPerson(person)))
+				.distinct()
+				.collect(Collectors.toList());
 
-		Stream<Person> stream = StreamSupport.stream(iterablePerson.spliterator(), false);
-		stream.forEach(x -> personMedicalRecordDTOs.add(
-				PersonMedicalRecordDTO.convertToDto(
-						x,
-						alertService.listMedicalRecordByFirstNameANDLastName(x.getFirstName(), x.getLastName()),
-						alertService.ageOfPersonByPerson(x))));
-
-		fireAlertDTO.setListPersonMedicalRecord(personMedicalRecordDTOs);
+		fireAlertDTO.setListPersonsMedicalRecord(personMedicalRecordDTOs);
 
 		Integer stationNumber = alertService.findStationNumberByAddress(address);
 		if (stationNumber == null) {
@@ -114,7 +116,30 @@ public class AlertController {
 
 	@GetMapping("/flood/stations")
 	public FloodAlertDTO floodAlert(@RequestParam("stations") List<Integer> aListOfStation_numbers) {
-		return null;
+
+		FloodAlertDTO floodAlertDTO = new FloodAlertDTO();
+
+		List<String> listAddress = aListOfStation_numbers.stream()
+				.map(stationNumber -> alertService.findAddressByStationNumber(stationNumber))
+				.flatMap(allSationNumber -> allSationNumber.stream())
+				.collect(Collectors.toList());
+
+		Map<String, List<PersonMedicalRecordDTO>> mapAddressPerson = new HashMap<>();
+
+		listAddress.forEach(addressFromStationNumber -> mapAddressPerson.put(
+						addressFromStationNumber,
+						listAddress.stream()
+								.map(addressFromPerson -> alertService.listPersonByAddress(addressFromPerson))
+								.flatMap(addressFromPerson -> addressFromPerson.stream())
+								.map(person -> PersonMedicalRecordDTO.convertToDto(
+										person,
+										alertService.listMedicalRecordByFirstNameANDLastName(
+												person.getFirstName(), person.getLastName()),
+										alertService.ageOfPersonByPerson(person)))
+								.collect(Collectors.toList())));
+		floodAlertDTO.setMapAddressPerson(mapAddressPerson);
+
+		return floodAlertDTO;
 	}
 
 	@GetMapping("/personInfo")
@@ -128,10 +153,11 @@ public class AlertController {
 	public CommunityEmailAlertDTO findCommunityEmailByCity(@RequestParam("city") String city) {
 		return null;
 	}
-	
+
 	private void validStationNumber(int stationNumber) {
 		if (stationNumber <= 0) {
-			throw new InvalidArgumentException("The station number cannot be less than or equal to 0 : " + stationNumber);
+			throw new InvalidArgumentException(
+					"The station number cannot be less than or equal to 0 : " + stationNumber);
 		}
 	}
 }

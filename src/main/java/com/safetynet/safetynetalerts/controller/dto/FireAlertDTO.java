@@ -1,28 +1,29 @@
 package com.safetynet.safetynetalerts.controller.dto;
 
+import java.util.List;
 import java.util.Set;
 
 public class FireAlertDTO {
 
-	private Set<PersonMedicalRecordDTO> personMedicalRecord;
+	private List<PersonMedicalRecordDTO> listPersonsMedicalRecord;
 	private int stationNumber;
 
 	public FireAlertDTO() {
 		super();
 	}
 
-	public FireAlertDTO(Set<PersonMedicalRecordDTO> setPersonMedicalRecord, int stationNumber) {
+	public FireAlertDTO(List<PersonMedicalRecordDTO> listPersonsMedicalRecord, int stationNumber) {
 		super();
-		this.personMedicalRecord = setPersonMedicalRecord;
+		this.listPersonsMedicalRecord = listPersonsMedicalRecord;
 		this.stationNumber = stationNumber;
 	}
 
-	public Set<PersonMedicalRecordDTO> getPersonMedicalRecord() {
-		return personMedicalRecord;
+	public List<PersonMedicalRecordDTO> getListPersonsMedicalRecord() {
+		return listPersonsMedicalRecord;
 	}
 
-	public void setListPersonMedicalRecord(Set<PersonMedicalRecordDTO> setPersonMedicalRecord) {
-		this.personMedicalRecord = setPersonMedicalRecord;
+	public void setListPersonsMedicalRecord(List<PersonMedicalRecordDTO> listPersonsMedicalRecord) {
+		this.listPersonsMedicalRecord = listPersonsMedicalRecord;
 	}
 
 	public int getStationNumber() {
@@ -35,7 +36,7 @@ public class FireAlertDTO {
 
 	@Override
 	public String toString() {
-		return "FireAlertDTO [setPersonMedicalRecord=" + personMedicalRecord + ", stationNumber=" + stationNumber
+		return "FireAlertDTO [listPersonsMedicalRecord=" + listPersonsMedicalRecord + ", stationNumber=" + stationNumber
 				+ "]";
 	}
 
