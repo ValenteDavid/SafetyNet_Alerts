@@ -115,14 +115,20 @@ public class AlertController {
 	}
 
 	@GetMapping("/flood/stations")
-	public FloodAlertDTO floodAlert(@RequestParam("stations") List<Integer> aListOfStation_numbers) {
+	public FloodAlertDTO floodAlert(@RequestParam("stations") List<Integer> listOfStationNumbers) {
 
 		FloodAlertDTO floodAlertDTO = new FloodAlertDTO();
+		
+		listOfStationNumbers.forEach(stationNumber -> validStationNumber(stationNumber));
 
-		List<String> listAddress = aListOfStation_numbers.stream()
+		List<String> listAddress = listOfStationNumbers.stream()
 				.map(stationNumber -> alertService.findAddressByStationNumber(stationNumber))
 				.flatMap(allSationNumber -> allSationNumber.stream())
 				.collect(Collectors.toList());
+		
+		if (listAddress.isEmpty()) {
+			throw new NotFoundException("No found any address at this list station number : " + listOfStationNumbers);
+		}
 
 		Map<String, List<PersonMedicalRecordDTO>> mapAddressPerson = new HashMap<>();
 

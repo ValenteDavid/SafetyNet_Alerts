@@ -4,6 +4,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -14,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.safetynet.safetynetalerts.controller.AlertController;
+import com.safetynet.safetynetalerts.model.MedicalRecord;
 import com.safetynet.safetynetalerts.model.Person;
 import com.safetynet.safetynetalerts.service.AlertService;
 
@@ -100,6 +104,58 @@ public class AlertControllerTest {
 
 		mockMvc.perform(get("/fire")
 				.param("address", address))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void testfloodAlert_Status_ValidArgument() throws Exception {
+		String listOfStationNumbers = "1,2";
+
+		List<String> listAddress = new ArrayList<>();
+		listAddress.add("address");
+		List<Person> listPerson = new ArrayList<>();
+		listPerson.add(new Person("firstName", "lastName"));
+
+		when(alertService.findAddressByStationNumber(Mockito.anyInt())).thenReturn(listAddress);
+		when(alertService.listPersonByAddress(Mockito.anyString())).thenReturn(listPerson);
+
+		when(alertService.listMedicalRecordByFirstNameANDLastName(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(new MedicalRecord());
+		when(alertService.ageOfPersonByPerson(Mockito.any(Person.class))).thenReturn(1);
+
+		mockMvc.perform(get("/flood/stations")
+				.param("stations", listOfStationNumbers))
+				.andExpect(status().isOk());
+	}
+
+	@ParameterizedTest(name = "listOfStationNumbers : {0}")
+	@ValueSource(strings = { "aaa", "-1","1,aaa","-1,1" })
+	public void testfloodAlert_Status_InvalidFormatArgument(String listOfStationNumbers) throws Exception {
+		List<String> listAddress = new ArrayList<>();
+
+		when(alertService.findAddressByStationNumber(Mockito.anyInt())).thenReturn(listAddress);
+
+		mockMvc.perform(get("/flood/stations")
+				.param("stations", listOfStationNumbers))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void testfloodAlert_Status_NotFound() throws Exception {
+		String listOfStationNumbers = "1,2";
+
+		List<String> listAddress = new ArrayList<>();
+		List<Person> listPerson = new ArrayList<>();
+
+		when(alertService.findAddressByStationNumber(Mockito.anyInt())).thenReturn(listAddress);
+		when(alertService.listPersonByAddress(Mockito.anyString())).thenReturn(listPerson);
+
+		when(alertService.listMedicalRecordByFirstNameANDLastName(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(new MedicalRecord());
+		when(alertService.ageOfPersonByPerson(Mockito.any(Person.class))).thenReturn(1);
+
+		mockMvc.perform(get("/flood/stations")
+				.param("stations", listOfStationNumbers))
 				.andExpect(status().isNotFound());
 	}
 
