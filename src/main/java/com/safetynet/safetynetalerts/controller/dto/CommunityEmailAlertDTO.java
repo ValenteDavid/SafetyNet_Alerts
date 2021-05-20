@@ -2,8 +2,11 @@ package com.safetynet.safetynetalerts.controller.dto;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CommunityEmailAlertDTO {
 
+	@JsonProperty("email")
 	private Set<String> listEmail;
 
 	public CommunityEmailAlertDTO() {

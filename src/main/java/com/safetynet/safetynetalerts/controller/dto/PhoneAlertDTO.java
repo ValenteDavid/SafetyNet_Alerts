@@ -2,8 +2,11 @@ package com.safetynet.safetynetalerts.controller.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class PhoneAlertDTO {
 
+	@JsonProperty("numbers")
 	private List<String> listNumbers;
 
 	public PhoneAlertDTO() {

@@ -2,8 +2,11 @@ package com.safetynet.safetynetalerts.controller.dto;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ChildAlertDTO {
 
+	@JsonProperty("children")
 	private Set<PersonChildAlertDTO> setChildren;
 
 	public ChildAlertDTO() {

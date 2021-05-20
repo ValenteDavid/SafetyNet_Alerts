@@ -3,8 +3,11 @@ package com.safetynet.safetynetalerts.controller.dto;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class FloodAlertDTO {
 
+	@JsonProperty("addressesPersons")
 	private Map<String,List<PersonMedicalRecordDTO>> mapAddressPerson;
 
 	public FloodAlertDTO() {

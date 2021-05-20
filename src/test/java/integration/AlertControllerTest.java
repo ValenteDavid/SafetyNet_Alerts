@@ -53,7 +53,7 @@ public class AlertControllerTest {
 		mockMvc.perform(get("/phoneAlert")
 				.param("firestation", firestation))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.listNumbers[*]", containsInAnyOrder(
+				.andExpect(jsonPath("$.numbers[*]", containsInAnyOrder(
 						"841-874-7512",
 						"841-874-7878",
 						"841-874-7458",
@@ -68,12 +68,27 @@ public class AlertControllerTest {
 				.param("address", address))
 				.andExpect(status().isOk())
 
-				.andExpect(jsonPath("$.personMedicalRecord[*].lastName", IsAnything.anything()))
-				.andExpect(jsonPath("$.personMedicalRecord[*].phone", IsAnything.anything()))
-				.andExpect(jsonPath("$.personMedicalRecord[*].age", IsAnything.anything()))
-				.andExpect(jsonPath("$.personMedicalRecord[*].medications", IsAnything.anything()))
-				.andExpect(jsonPath("$.personMedicalRecord[*].allergies", IsAnything.anything()))
+				.andExpect(jsonPath("$.persons[*].lastName", IsAnything.anything()))
+				.andExpect(jsonPath("$.persons[*].phone", IsAnything.anything()))
+				.andExpect(jsonPath("$.persons[*].age", IsAnything.anything()))
+				.andExpect(jsonPath("$.persons[*].medications", IsAnything.anything()))
+				.andExpect(jsonPath("$.persons[*].allergies", IsAnything.anything()))
 
 				.andExpect(jsonPath("$.stationNumber", is(3)));
+	}
+	
+	@Test
+	public void testfloodAlert_ReturnContent_ValidArgument() throws Exception {
+		String listOfStationNumbers = "1,2";
+
+		mockMvc.perform(get("/flood/stations")
+				.param("stations", listOfStationNumbers))
+				.andExpect(status().isOk())
+
+				.andExpect(jsonPath("$.addressesPersons[*].['951 LoneTree Rd'][0].lastName", IsAnything.anything()))
+				.andExpect(jsonPath("$.addressesPersons[*].['951 LoneTree Rd'][1].phone", IsAnything.anything()))
+				.andExpect(jsonPath("$.addressesPersons[*].['951 LoneTree Rd'][2].age", IsAnything.anything()))
+				.andExpect(jsonPath("$.addressesPersons[*].['951 LoneTree Rd'][3].medications", IsAnything.anything()))
+				.andExpect(jsonPath("$.addressesPersons[*].['951 LoneTree Rd'][4].allergies", IsAnything.anything()));
 	}
 }

@@ -1,10 +1,12 @@
 package com.safetynet.safetynetalerts.controller.dto;
 
 import java.util.List;
-import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FireAlertDTO {
 
+	@JsonProperty("persons")
 	private List<PersonMedicalRecordDTO> listPersonsMedicalRecord;
 	private int stationNumber;
 
