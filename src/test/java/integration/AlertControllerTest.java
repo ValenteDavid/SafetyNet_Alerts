@@ -76,7 +76,7 @@ public class AlertControllerTest {
 
 				.andExpect(jsonPath("$.stationNumber", is(3)));
 	}
-	
+
 	@Test
 	public void testfloodAlert_ReturnContent_ValidArgument() throws Exception {
 		String listOfStationNumbers = "1,2";
@@ -90,5 +90,18 @@ public class AlertControllerTest {
 				.andExpect(jsonPath("$.addressesPersons[*].['951 LoneTree Rd'][2].age", IsAnything.anything()))
 				.andExpect(jsonPath("$.addressesPersons[*].['951 LoneTree Rd'][3].medications", IsAnything.anything()))
 				.andExpect(jsonPath("$.addressesPersons[*].['951 LoneTree Rd'][4].allergies", IsAnything.anything()));
+	}
+
+	@Test
+	public void testchildAlert_ReturnContent_ValidArgument() throws Exception {
+		String address = "892 Downing Ct";
+
+		mockMvc.perform(get("/childAlert")
+				.param("address", address))
+				.andExpect(status().isOk())
+
+				.andExpect(jsonPath("$.children[*].firstName", IsAnything.anything()))
+				.andExpect(jsonPath("$.children[*].lastName", IsAnything.anything()))
+				.andExpect(jsonPath("$.children[*].age", IsAnything.anything()));
 	}
 }
