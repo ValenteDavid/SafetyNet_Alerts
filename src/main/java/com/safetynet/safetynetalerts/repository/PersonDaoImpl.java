@@ -13,8 +13,14 @@ public class PersonDaoImpl implements PersonDao {
 	public static List<Person> persons;
 
 	@Override
-	public Person findByFirstNameANDLastName(String firstName, String lastName) {
-		return null;
+	public List<Person> findByFirstNameANDLastName(String firstName, String lastName) {
+		List<Person> listPersons = persons.stream()
+				.filter(person -> (person.getFirstName().contentEquals(firstName)))
+				.filter(person -> (person.getLastName().contentEquals(lastName)))
+				.distinct()
+				.collect(Collectors.toList());
+		
+		return listPersons;
 	}
 
 	@Override
@@ -39,7 +45,6 @@ public class PersonDaoImpl implements PersonDao {
 
 	@Override
 	public List<Person> findAllByAddress(String address) {
-
 		List<Person> listPersons = persons.stream()
 				.filter(person -> person.getAddress().contentEquals(address))
 				.distinct()

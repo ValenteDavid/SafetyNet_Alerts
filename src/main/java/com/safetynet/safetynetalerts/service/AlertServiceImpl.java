@@ -39,6 +39,12 @@ public class AlertServiceImpl implements AlertService {
 	public List<Person> listPersonByAddress(String address) {
 		return personService.findAllByAddress(address);
 	}
+	
+	@Override
+	public List<Person> listPersonByFirstNameANDLastName(String firstName, String lastName) {
+		return personService.findByFirstNameANDLastName(firstName, lastName);
+	}
+
 
 	@Override
 	public int ageOfPersonByBirthdate(Date birthdate) {

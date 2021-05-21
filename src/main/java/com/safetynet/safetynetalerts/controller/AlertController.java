@@ -3,6 +3,7 @@ package com.safetynet.safetynetalerts.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.safetynet.safetynetalerts.controller.dto.FloodAlertDTO;
 import com.safetynet.safetynetalerts.controller.dto.PersonChildAlertDTO;
 import com.safetynet.safetynetalerts.controller.dto.PersonFireStationAlertDTO;
 import com.safetynet.safetynetalerts.controller.dto.PersonInfoAlertDTO;
+import com.safetynet.safetynetalerts.controller.dto.PersonInfoDTO;
 import com.safetynet.safetynetalerts.controller.dto.PersonMedicalRecordDTO;
 import com.safetynet.safetynetalerts.controller.dto.PhoneAlertDTO;
 import com.safetynet.safetynetalerts.controller.exceptions.InvalidArgumentException;
@@ -61,7 +63,7 @@ public class AlertController {
 
 		List<Person> listChidren = alertService.listChildren(
 				alertService.listPersonByAddress(address));
-		
+
 		if (listChidren.isEmpty()) {
 			return null;
 		}
@@ -157,7 +159,41 @@ public class AlertController {
 	public PersonInfoAlertDTO findPersonInfoByFirstnameAndLastname(
 			@RequestParam("firstName") String firstName,
 			@RequestParam("lastName") String lastName) {
-		return null;
+		PersonInfoAlertDTO personInfoAlertDTO = new PersonInfoAlertDTO();
+
+		Pattern nameValidator = Pattern.compile("\\p{L}*(-\\p{L}*)*");
+		if ((nameValidator.matcher(firstName).matches() || nameValidator.matcher(lastName).matches()) == false) {
+			throw new InvalidArgumentException(
+					"The format of the first name is not valid : " + firstName + "and last name : " + lastName);
+		}
+
+		if (nameValidator.matcher(firstName).matches()) {
+			throw new InvalidArgumentException(
+					"The format of the first name is not valid : " + firstName);
+		}
+		if (nameValidator.matcher(lastName).matches()) {
+			throw new InvalidArgumentException(
+					"The format of the last name is not valid : " + lastName);
+		} else {
+
+		}
+
+		List<Person> listPersons = alertService.listPersonByFirstNameANDLastName(firstName, lastName);
+
+		if (listPersons.isEmpty()) {
+			throw new NotFoundException(
+					"No person has been found with this first name : " + firstName + " and last name : " + lastName);
+		}
+
+		personInfoAlertDTO.setListPersonInfo(
+				listPersons.stream()
+						.map(person -> PersonInfoDTO.convertToDto(
+								person,
+								alertService.listMedicalRecordByFirstNameANDLastName(firstName, lastName),
+								alertService.ageOfPersonByPerson(person)))
+						.collect(Collectors.toList()));
+
+		return personInfoAlertDTO;
 	}
 
 	@GetMapping("/communityEmail")
@@ -171,4 +207,5 @@ public class AlertController {
 					"The station number cannot be less than or equal to 0 : " + stationNumber);
 		}
 	}
+
 }

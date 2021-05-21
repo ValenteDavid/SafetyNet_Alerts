@@ -10,6 +10,7 @@ public interface AlertService {
 
 	public List<Person> listPersonByStationNumber(int stationNumber);
 	public List<Person> listPersonByAddress(String address);
+	public List<Person> listPersonByFirstNameANDLastName(String firstName, String lastName);
 	public List<Person> listChildren(List<Person> listPersons);
 	public List<Person> listAdult(List<Person> listPersons);
 	

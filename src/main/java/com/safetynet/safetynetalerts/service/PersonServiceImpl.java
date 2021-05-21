@@ -15,8 +15,8 @@ public class PersonServiceImpl implements PersonService {
 	private PersonDao personDao;
 
 	@Override
-	public Person findByFirstNameANDLastName(String firstName, String lastName) {
-		return null;
+	public List<Person> findByFirstNameANDLastName(String firstName, String lastName) {
+		return personDao.findByFirstNameANDLastName(firstName, lastName);
 	}
 
 	@Override
