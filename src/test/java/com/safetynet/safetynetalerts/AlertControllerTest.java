@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,13 +112,8 @@ public class AlertControllerTest {
 	public void testfloodAlert_Status_ValidArgument() throws Exception {
 		String listOfStationNumbers = "1,2";
 
-		List<String> listAddress = new ArrayList<>();
-		listAddress.add("address");
-		List<Person> listPerson = new ArrayList<>();
-		listPerson.add(new Person("firstName", "lastName"));
-
-		when(alertService.findAddressByStationNumber(Mockito.anyInt())).thenReturn(listAddress);
-		when(alertService.listPersonByAddress(Mockito.anyString())).thenReturn(listPerson);
+		when(alertService.findAddressByStationNumber(Mockito.anyInt())).thenReturn(Mockito.anyList());
+		when(alertService.listPersonByAddress(Mockito.anyString())).thenReturn(Mockito.anyList());
 
 		when(alertService.listMedicalRecordByFirstNameANDLastName(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(new MedicalRecord());
@@ -131,9 +127,8 @@ public class AlertControllerTest {
 	@ParameterizedTest(name = "listOfStationNumbers : {0}")
 	@ValueSource(strings = { "aaa", "-1","1,aaa","-1,1" })
 	public void testfloodAlert_Status_InvalidFormatArgument(String listOfStationNumbers) throws Exception {
-		List<String> listAddress = new ArrayList<>();
 
-		when(alertService.findAddressByStationNumber(Mockito.anyInt())).thenReturn(listAddress);
+		when(alertService.findAddressByStationNumber(Mockito.anyInt())).thenReturn(new ArrayList<>());
 
 		mockMvc.perform(get("/flood/stations")
 				.param("stations", listOfStationNumbers))
@@ -144,11 +139,8 @@ public class AlertControllerTest {
 	public void testfloodAlert_Status_NotFound() throws Exception {
 		String listOfStationNumbers = "1,2";
 
-		List<String> listAddress = new ArrayList<>();
-		List<Person> listPerson = new ArrayList<>();
-
-		when(alertService.findAddressByStationNumber(Mockito.anyInt())).thenReturn(listAddress);
-		when(alertService.listPersonByAddress(Mockito.anyString())).thenReturn(listPerson);
+		when(alertService.findAddressByStationNumber(Mockito.anyInt())).thenReturn(new ArrayList<>());
+		when(alertService.listPersonByAddress(Mockito.anyString())).thenReturn(new ArrayList<>());
 
 		when(alertService.listMedicalRecordByFirstNameANDLastName(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(new MedicalRecord());
@@ -159,4 +151,36 @@ public class AlertControllerTest {
 				.andExpect(status().isNotFound());
 	}
 
+	@ParameterizedTest(name = "firstName : {0} ,lastName : {1}")
+	@CsvSource({"firstName,lastName","first name,last Name","first-name,last Name", })
+	public void testfindPersonInfoByFirstnameAndLastname_Status_ValidArgument(String firstName,String lastName) throws Exception {
+
+		mockMvc.perform(get("/personInfo")
+				.param("firstName", firstName)
+				.param("lastName", lastName))
+				.andExpect(status().isOk());
+	}
+
+	@ParameterizedTest(name = "firstName : {0} ,lastName : {1}")
+	@CsvSource({"firstName,0","0,lastName","0,0","*,*" })
+	public void testfindPersonInfoByFirstnameAndLastname_Status_InvalidFormatArgument(String firstName,String lastName) throws Exception {
+
+		mockMvc.perform(get("/personInfo")
+				.param("firstName", firstName)
+				.param("lastName", lastName))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void testfindPersonInfoByFirstnameAndLastname_Status_NotFound() throws Exception {
+		String firstName = "firstName";
+		String lastName = "lastName";
+		
+		when(alertService.listPersonByFirstNameANDLastName(firstName, lastName)).thenReturn(new ArrayList<>());
+
+		mockMvc.perform(get("/personInfo")
+				.param("firstName", firstName)
+				.param("lastName", lastName))
+				.andExpect(status().isNotFound());
+	}
 }
