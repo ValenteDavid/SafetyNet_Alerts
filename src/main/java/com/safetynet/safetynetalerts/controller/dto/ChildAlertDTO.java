@@ -1,34 +1,31 @@
 package com.safetynet.safetynetalerts.controller.dto;
 
-import java.util.Set;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ChildAlertDTO {
 
 	@JsonProperty("children")
-	private Set<PersonChildAlertDTO> setChildren;
+	private List<PersonChildAlertDTO> listChildren;
 
 	public ChildAlertDTO() {
 		super();
 	}
 
-	public ChildAlertDTO(Set<PersonChildAlertDTO> setChildren) {
+	public ChildAlertDTO(List<PersonChildAlertDTO> listChildren) {
 		super();
-		this.setChildren = setChildren;
+		this.listChildren = listChildren;
 	}
 
-	public Set<PersonChildAlertDTO> getSetChildren() {
-		return setChildren;
+	public List<PersonChildAlertDTO> getListChildren() {
+		return listChildren;
 	}
 
-	public void setListChildren(Set<PersonChildAlertDTO> setChildren) {
-		this.setChildren = setChildren;
+	public void setListChildren(List<PersonChildAlertDTO> listChildren) {
+		this.listChildren = listChildren;
 	}
 
-	@Override
-	public String toString() {
-		return "ChildAlertDTO [ListChildren=" + setChildren + "]";
-	}
+	
 
 }

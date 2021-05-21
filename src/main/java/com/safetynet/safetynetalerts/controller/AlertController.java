@@ -15,6 +15,7 @@ import com.safetynet.safetynetalerts.controller.dto.CommunityEmailAlertDTO;
 import com.safetynet.safetynetalerts.controller.dto.FireAlertDTO;
 import com.safetynet.safetynetalerts.controller.dto.FireStationAlertDTO;
 import com.safetynet.safetynetalerts.controller.dto.FloodAlertDTO;
+import com.safetynet.safetynetalerts.controller.dto.PersonChildAlertDTO;
 import com.safetynet.safetynetalerts.controller.dto.PersonFireStationAlertDTO;
 import com.safetynet.safetynetalerts.controller.dto.PersonInfoAlertDTO;
 import com.safetynet.safetynetalerts.controller.dto.PersonMedicalRecordDTO;
@@ -33,7 +34,6 @@ public class AlertController {
 	@GetMapping("/firestation")
 	public FireStationAlertDTO findPersonInfoByFireStationNumber(
 			@RequestParam("stationNumber") int stationNumber) {
-
 		FireStationAlertDTO fireStationAlertDTO = new FireStationAlertDTO();
 
 		validStationNumber(stationNumber);
@@ -57,12 +57,24 @@ public class AlertController {
 
 	@GetMapping("/childAlert")
 	public ChildAlertDTO childAlert(@RequestParam("address") String address) {
-		return null;
+		ChildAlertDTO childAlertDTO = new ChildAlertDTO();
+
+		List<Person> listChidren = alertService.listChildren(
+				alertService.listPersonByAddress(address));
+		
+		if (listChidren.isEmpty()) {
+			return null;
+		}
+
+		childAlertDTO.setListChildren(listChidren.stream()
+				.map(child -> PersonChildAlertDTO.convertToDto(child, alertService.ageOfPersonByPerson(child)))
+				.collect(Collectors.toList()));
+
+		return childAlertDTO;
 	}
 
 	@GetMapping("/phoneAlert")
 	public PhoneAlertDTO phoneAlert(@RequestParam("firestation") int firestation_number) {
-
 		PhoneAlertDTO phoneAlertDTO = new PhoneAlertDTO();
 
 		validStationNumber(firestation_number);
@@ -80,7 +92,6 @@ public class AlertController {
 
 	@GetMapping("/fire")
 	public FireAlertDTO fireAlert(@RequestParam("address") String address) {
-
 		FireAlertDTO fireAlertDTO = new FireAlertDTO();
 
 		List<Person> listPersons = alertService.listPersonByAddress(address);
@@ -111,16 +122,15 @@ public class AlertController {
 
 	@GetMapping("/flood/stations")
 	public FloodAlertDTO floodAlert(@RequestParam("stations") List<Integer> listOfStationNumbers) {
-
 		FloodAlertDTO floodAlertDTO = new FloodAlertDTO();
-		
+
 		listOfStationNumbers.forEach(stationNumber -> validStationNumber(stationNumber));
 
 		List<String> listAddress = listOfStationNumbers.stream()
 				.map(stationNumber -> alertService.findAddressByStationNumber(stationNumber))
 				.flatMap(allSationNumber -> allSationNumber.stream())
 				.collect(Collectors.toList());
-		
+
 		if (listAddress.isEmpty()) {
 			throw new NotFoundException("No found any address at this list station number : " + listOfStationNumbers);
 		}
@@ -128,16 +138,16 @@ public class AlertController {
 		Map<String, List<PersonMedicalRecordDTO>> mapAddressPerson = new HashMap<>();
 
 		listAddress.forEach(addressFromStationNumber -> mapAddressPerson.put(
-						addressFromStationNumber,
-						listAddress.stream()
-								.map(addressFromPerson -> alertService.listPersonByAddress(addressFromPerson))
-								.flatMap(addressFromPerson -> addressFromPerson.stream())
-								.map(person -> PersonMedicalRecordDTO.convertToDto(
-										person,
-										alertService.listMedicalRecordByFirstNameANDLastName(
-												person.getFirstName(), person.getLastName()),
-										alertService.ageOfPersonByPerson(person)))
-								.collect(Collectors.toList())));
+				addressFromStationNumber,
+				listAddress.stream()
+						.map(addressFromPerson -> alertService.listPersonByAddress(addressFromPerson))
+						.flatMap(addressFromPerson -> addressFromPerson.stream())
+						.map(person -> PersonMedicalRecordDTO.convertToDto(
+								person,
+								alertService.listMedicalRecordByFirstNameANDLastName(
+										person.getFirstName(), person.getLastName()),
+								alertService.ageOfPersonByPerson(person)))
+						.collect(Collectors.toList())));
 		floodAlertDTO.setMapAddressPerson(mapAddressPerson);
 
 		return floodAlertDTO;
