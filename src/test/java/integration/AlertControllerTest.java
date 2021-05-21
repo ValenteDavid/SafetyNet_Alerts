@@ -104,4 +104,23 @@ public class AlertControllerTest {
 				.andExpect(jsonPath("$.children[*].lastName", IsAnything.anything()))
 				.andExpect(jsonPath("$.children[*].age", IsAnything.anything()));
 	}
+
+	@Test
+	public void testfindPersonInfoByFirstnameAndLastname_ReturnContent_ValidArgument() throws Exception {
+		String firstName = "Kendrik";
+		String lastName = "Stelzer";
+
+		mockMvc.perform(get("/personInfo")
+				.param("firstName", firstName)
+				.param("lastName", lastName))
+				.andExpect(status().isOk())
+
+				.andExpect(jsonPath("$.persons[0].lastName", is("Stelzer")))
+				.andExpect(jsonPath("$.persons[0].address",is("947 E. Rose Dr 97451 Culver")))
+				.andExpect(jsonPath("$.persons[0].age", is(6)))
+				.andExpect(jsonPath("$.persons[0].email", is("bstel@email.com")))
+				.andExpect(jsonPath("$.persons[0].medications[0]", is("noxidian:100mg")))
+				.andExpect(jsonPath("$.persons[0].medications[1]", is("pharmacol:2500mg")))
+				.andExpect(jsonPath("$.persons[0].allergies", IsAnything.anything()));
+	}
 }
