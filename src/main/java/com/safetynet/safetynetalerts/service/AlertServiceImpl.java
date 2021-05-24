@@ -47,6 +47,11 @@ public class AlertServiceImpl implements AlertService {
 
 
 	@Override
+	public List<Person> listPersonByCity(String city) {
+		return personService.findByCity(city);
+	}
+
+	@Override
 	public int ageOfPersonByBirthdate(Date birthdate) {
 		Calendar birthdateCalendar = Calendar.getInstance();
 		birthdateCalendar.setTime(birthdate);
@@ -124,7 +129,11 @@ public class AlertServiceImpl implements AlertService {
 
 	@Override
 	public List<String> listEmail(List<Person> listPersons) {
-		return null;
+		List<String> listEmail = listPersons.stream()
+				.map(person -> person.getEmail())
+				.distinct()
+				.collect(Collectors.toList());
+		return listEmail;
 	}
 
 	@Override

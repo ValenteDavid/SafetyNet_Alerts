@@ -111,9 +111,15 @@ public class AlertControllerTest {
 	@Test
 	public void testfloodAlert_Status_ValidArgument() throws Exception {
 		String listOfStationNumbers = "1,2";
-
-		when(alertService.findAddressByStationNumber(Mockito.anyInt())).thenReturn(Mockito.anyList());
-		when(alertService.listPersonByAddress(Mockito.anyString())).thenReturn(Mockito.anyList());
+		List<Person> listPersons = new ArrayList<>();
+		listPersons.add(new Person("firstName", "lastName"));
+		
+		List<String> listAddresses = new ArrayList<>();
+		listAddresses.add("address");
+		
+		when(alertService.findAddressByStationNumber(1)).thenReturn(listAddresses);
+		when(alertService.findAddressByStationNumber(2)).thenReturn(listAddresses);
+		when(alertService.listPersonByAddress("address")).thenReturn(listPersons);
 
 		when(alertService.listMedicalRecordByFirstNameANDLastName(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(new MedicalRecord());
@@ -152,9 +158,18 @@ public class AlertControllerTest {
 	}
 
 	@ParameterizedTest(name = "firstName : {0} ,lastName : {1}")
-	@CsvSource({"firstName,lastName","first name,last Name","first-name,last Name", })
+	@CsvSource({"Firstname,Lastname","First-Name,Last-Name","First Name,Last Name" })
 	public void testfindPersonInfoByFirstnameAndLastname_Status_ValidArgument(String firstName,String lastName) throws Exception {
-
+		
+		List<Person> listPerson = new ArrayList<Person>();
+		Person person = new Person(firstName, lastName);
+		listPerson.add(person);
+		MedicalRecord medicalRecord = new MedicalRecord(firstName, lastName, null, null, null);
+		when(alertService.listPersonByFirstNameANDLastName(Mockito.anyString(),Mockito.anyString())).thenReturn(listPerson);
+		
+		when(alertService.listMedicalRecordByFirstNameANDLastName(firstName, lastName)).thenReturn(medicalRecord);
+		when(alertService.ageOfPersonByPerson(person)).thenReturn(1);
+		
 		mockMvc.perform(get("/personInfo")
 				.param("firstName", firstName)
 				.param("lastName", lastName))
@@ -162,7 +177,7 @@ public class AlertControllerTest {
 	}
 
 	@ParameterizedTest(name = "firstName : {0} ,lastName : {1}")
-	@CsvSource({"firstName,0","0,lastName","0,0","*,*" })
+	@CsvSource({"firstName,0","0,lastName","0,0","*,*","Firstname,lastName","firstName,Lastname" })
 	public void testfindPersonInfoByFirstnameAndLastname_Status_InvalidFormatArgument(String firstName,String lastName) throws Exception {
 
 		mockMvc.perform(get("/personInfo")
@@ -173,8 +188,8 @@ public class AlertControllerTest {
 
 	@Test
 	public void testfindPersonInfoByFirstnameAndLastname_Status_NotFound() throws Exception {
-		String firstName = "firstName";
-		String lastName = "lastName";
+		String firstName = "Firstname";
+		String lastName = "Lastname";
 		
 		when(alertService.listPersonByFirstNameANDLastName(firstName, lastName)).thenReturn(new ArrayList<>());
 

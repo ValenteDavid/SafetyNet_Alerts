@@ -42,4 +42,9 @@ public class PersonServiceImpl implements PersonService {
 	@Override
 	public void delete(Person person) {
 	}
+
+	@Override
+	public List<Person> findByCity(String city) {
+		return personDao.findByCity(city);
+	}
 }

@@ -1,6 +1,7 @@
 package integration;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -18,7 +19,7 @@ import com.safetynet.safetynetalerts.SafetyNetAlertsApplication;
 
 @SpringBootTest(classes = SafetyNetAlertsApplication.class)
 @AutoConfigureMockMvc
-public class AlertControllerTest {
+public class AlertTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -122,5 +123,31 @@ public class AlertControllerTest {
 				.andExpect(jsonPath("$.persons[0].medications[0]", is("noxidian:100mg")))
 				.andExpect(jsonPath("$.persons[0].medications[1]", is("pharmacol:2500mg")))
 				.andExpect(jsonPath("$.persons[0].allergies", IsAnything.anything()));
+	}
+	
+	@Test
+	public void testfindCommunityEmailByCity_ReturnContent_ValidArgument() throws Exception {
+		String city = "Culver";
+
+		mockMvc.perform(get("/communityEmail")
+				.param("city", city))
+				.andExpect(status().isOk())
+
+				.andExpect(jsonPath("$.email", contains(
+				 "jaboyd@email.com",
+			        "drk@email.com",
+			        "tenz@email.com",
+			        "tcoop@ymail.com",
+			        "lily@email.com",
+			        "soph@email.com",
+			        "ward@email.com",
+			        "zarc@email.com",
+			        "reg@email.com",
+			        "jpeter@email.com",
+			        "aly@imail.com",
+			        "bstel@email.com",
+			        "ssanw@email.com",
+			        "clivfd@ymail.com",
+			        "gramps@email.com")));
 	}
 }

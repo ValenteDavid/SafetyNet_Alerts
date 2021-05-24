@@ -161,21 +161,20 @@ public class AlertController {
 			@RequestParam("lastName") String lastName) {
 		PersonInfoAlertDTO personInfoAlertDTO = new PersonInfoAlertDTO();
 
-		Pattern nameValidator = Pattern.compile("\\p{L}*(-\\p{L}*)*");
-		if ((nameValidator.matcher(firstName).matches() || nameValidator.matcher(lastName).matches()) == false) {
+		//Pattern nameValidator = Pattern.compile("\\p{L}*(-\\p{L}*)*");
+		//Pattern nameValidator = Pattern.compile("\\p{L}*(-|\\p{javaWhitespace})??(\\p{L}*)*");
+		Pattern nameValidator = Pattern.compile("^\\p{Lu}{1}\\p{L}*((-|\\p{javaWhitespace})??\\p{Lu}{1}(\\p{L}*)*)??");
+		if (nameValidator.matcher(firstName).matches() == false && nameValidator.matcher(lastName).matches() == false) {
 			throw new InvalidArgumentException(
 					"The format of the first name is not valid : " + firstName + "and last name : " + lastName);
-		}
-
-		if (nameValidator.matcher(firstName).matches()) {
-			throw new InvalidArgumentException(
-					"The format of the first name is not valid : " + firstName);
-		}
-		if (nameValidator.matcher(lastName).matches()) {
-			throw new InvalidArgumentException(
-					"The format of the last name is not valid : " + lastName);
 		} else {
-
+			if (nameValidator.matcher(firstName).matches() == false) {
+				throw new InvalidArgumentException(
+						"The format of the first name is not valid : " + firstName);
+			} else if (nameValidator.matcher(lastName).matches() == false) {
+				throw new InvalidArgumentException(
+						"The format of the last name is not valid : " + lastName);
+			}
 		}
 
 		List<Person> listPersons = alertService.listPersonByFirstNameANDLastName(firstName, lastName);
@@ -198,7 +197,13 @@ public class AlertController {
 
 	@GetMapping("/communityEmail")
 	public CommunityEmailAlertDTO findCommunityEmailByCity(@RequestParam("city") String city) {
-		return null;
+		CommunityEmailAlertDTO communityEmailAlertDTO = new CommunityEmailAlertDTO();
+		
+		List<String> listEmail = alertService.listEmail(alertService.listPersonByCity(city));
+		
+		communityEmailAlertDTO.setListEmail(listEmail);
+		
+		return communityEmailAlertDTO;
 	}
 
 	private void validStationNumber(int stationNumber) {

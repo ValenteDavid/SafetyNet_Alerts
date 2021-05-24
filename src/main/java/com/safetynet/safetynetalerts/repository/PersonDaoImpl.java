@@ -52,4 +52,14 @@ public class PersonDaoImpl implements PersonDao {
 
 		return listPersons;
 	}
+
+	@Override
+	public List<Person> findByCity(String city) {
+		List<Person> listPersons = persons.stream()
+				.filter(person -> person.getCity().contentEquals(city))
+				.distinct()
+				.collect(Collectors.toList());
+
+		return listPersons;
+	}
 }

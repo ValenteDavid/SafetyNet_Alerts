@@ -11,6 +11,7 @@ public interface AlertService {
 	public List<Person> listPersonByStationNumber(int stationNumber);
 	public List<Person> listPersonByAddress(String address);
 	public List<Person> listPersonByFirstNameANDLastName(String firstName, String lastName);
+	public List<Person> listPersonByCity(String city);
 	public List<Person> listChildren(List<Person> listPersons);
 	public List<Person> listAdult(List<Person> listPersons);
 	
@@ -26,5 +27,6 @@ public interface AlertService {
 	public Integer findStationNumberByAddress(String Address);
 	public MedicalRecord listMedicalRecordByFirstNameANDLastName(String firstName, String lastName);
 	public List<String> findAddressByStationNumber(int stationNumber);
+	
 
 }

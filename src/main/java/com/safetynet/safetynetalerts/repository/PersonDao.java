@@ -17,4 +17,6 @@ public interface PersonDao {
 	public Person update(Person person);
 
 	public void delete(Person person);
+
+	public List<Person> findByCity(String city);
 }
