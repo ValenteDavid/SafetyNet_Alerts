@@ -2,7 +2,6 @@ package com.safetynet.safetynetalerts.repository;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,7 +19,7 @@ import com.safetynet.safetynetalerts.model.Person;
 @PropertySource("classpath:app.data")
 @ConfigurationProperties
 public class DataFile {
-	
+
 	private static String filepath;
 
 	public static void loadFile() {
@@ -50,12 +49,23 @@ public class DataFile {
 			});
 			MedicalRecordImpl.medicalRecords = medicalRecords;
 		} catch (IOException e) {
-			// TODO: handle exception
 		}
 	}
-	
+
 	public static void saveFile() {
-		
+		try {
+			File fileUse = new File("src/main/resources/data.json");
+			
+			FileData fileDTO = new FileData(
+					PersonDaoImpl.persons,
+					FireStationImpl.fireStations,
+					MedicalRecordImpl.medicalRecords);
+
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.writeValue(fileUse,fileDTO);
+		} catch (IOException e) {
+		}
 	}
 
 }
+
