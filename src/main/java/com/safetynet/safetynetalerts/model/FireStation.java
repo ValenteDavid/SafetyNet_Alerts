@@ -1,14 +1,15 @@
 package com.safetynet.safetynetalerts.model;
 
-import org.springframework.stereotype.Component;
+import javax.validation.constraints.Min;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 
-@Component
+
 public class FireStation {
 
 	private String address;
 	@JsonAlias(value = "station")
+	@Min(value = 1)
 	private int stationNumber;
 
 	public FireStation() {

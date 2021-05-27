@@ -1,16 +1,17 @@
 package com.safetynet.safetynetalerts.model;
 
 public enum PersonType {
-	CHILD(18),
-	ADULT(200);
+	CHILD,
+	ADULT;
 
-	private final int maxAge;
+	private static final int MAX_AGE = 18;
 
-	PersonType(int maxAge) {
-		this.maxAge = maxAge;
+	public static PersonType get(int age) {
+		if (age <= MAX_AGE) {
+			return PersonType.CHILD;
+		} else {
+			return PersonType.ADULT;
+		}
 	}
 
-	public int getMaxAge() {
-		return maxAge;
-	}
 }

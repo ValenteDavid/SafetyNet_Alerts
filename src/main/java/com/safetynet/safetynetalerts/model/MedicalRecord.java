@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import javax.validation.constraints.Past;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,6 +14,7 @@ public class MedicalRecord {
 
 	private String firstName;
 	private String lastName;
+	@Past
 	private Date birthdate;
 	private String[] medications;
 	private String[] allergies;

@@ -1,11 +1,16 @@
 package com.safetynet.safetynetalerts.model;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
+
 import org.springframework.stereotype.Component;
 
 @Component
 public class Person {
 
+	@Pattern(regexp ="^\\p{Lu}{1}\\p{L}*((-|\\p{javaWhitespace})??\\p{Lu}{1}(\\p{L}*)*)??")
 	private String firstName;
+	@Pattern(regexp="^\\p{Lu}{1}\\p{L}*((-|\\p{javaWhitespace})??\\p{Lu}{1}(\\p{L}*)*)??")
 	private String lastName;
 
 	private String address;
@@ -13,6 +18,7 @@ public class Person {
 	private String city;
 	private Long zip;
 	private String phone;
+	@Email
 	private String email;
 
 	public Person() {
