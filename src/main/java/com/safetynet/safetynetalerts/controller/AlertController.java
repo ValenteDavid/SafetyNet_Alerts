@@ -3,7 +3,6 @@ package com.safetynet.safetynetalerts.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,22 +160,6 @@ public class AlertController {
 			@RequestParam("lastName") String lastName) {
 		PersonInfoAlertDTO personInfoAlertDTO = new PersonInfoAlertDTO();
 
-		//Pattern nameValidator = Pattern.compile("\\p{L}*(-\\p{L}*)*");
-		//Pattern nameValidator = Pattern.compile("\\p{L}*(-|\\p{javaWhitespace})??(\\p{L}*)*");
-		Pattern nameValidator = Pattern.compile("^\\p{Lu}{1}\\p{L}*((-|\\p{javaWhitespace})??\\p{Lu}{1}(\\p{L}*)*)??");
-		if (nameValidator.matcher(firstName).matches() == false && nameValidator.matcher(lastName).matches() == false) {
-			throw new InvalidArgumentException(
-					"The format of the first name is not valid : " + firstName + "and last name : " + lastName);
-		} else {
-			if (nameValidator.matcher(firstName).matches() == false) {
-				throw new InvalidArgumentException(
-						"The format of the first name is not valid : " + firstName);
-			} else if (nameValidator.matcher(lastName).matches() == false) {
-				throw new InvalidArgumentException(
-						"The format of the last name is not valid : " + lastName);
-			}
-		}
-
 		List<Person> listPersons = alertService.listPersonByFirstNameANDLastName(firstName, lastName);
 
 		if (listPersons.isEmpty()) {
@@ -206,6 +189,7 @@ public class AlertController {
 		return communityEmailAlertDTO;
 	}
 
+	//TODO Deplacer
 	private void validStationNumber(int stationNumber) {
 		if (stationNumber <= 0) {
 			throw new InvalidArgumentException(
