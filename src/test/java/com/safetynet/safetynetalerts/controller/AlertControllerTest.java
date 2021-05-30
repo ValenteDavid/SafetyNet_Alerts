@@ -1,4 +1,4 @@
-package com.safetynet.safetynetalerts;
+package com.safetynet.safetynetalerts.controller;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -17,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.safetynet.safetynetalerts.controller.AlertController;
 import com.safetynet.safetynetalerts.model.MedicalRecord;
 import com.safetynet.safetynetalerts.model.Person;
 import com.safetynet.safetynetalerts.service.AlertService;
@@ -174,16 +173,6 @@ public class AlertControllerTest {
 				.param("firstName", firstName)
 				.param("lastName", lastName))
 				.andExpect(status().isOk());
-	}
-
-	@ParameterizedTest(name = "firstName : {0} ,lastName : {1}")
-	@CsvSource({"firstName,0","0,lastName","0,0","*,*","Firstname,lastName","firstName,Lastname" })
-	public void testfindPersonInfoByFirstnameAndLastname_Status_InvalidFormatArgument(String firstName,String lastName) throws Exception {
-
-		mockMvc.perform(get("/personInfo")
-				.param("firstName", firstName)
-				.param("lastName", lastName))
-				.andExpect(status().isBadRequest());
 	}
 
 	@Test

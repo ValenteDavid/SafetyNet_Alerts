@@ -6,7 +6,7 @@ import com.safetynet.safetynetalerts.model.FireStation;
 
 public interface FireStationService {
 
-	public FireStation add(FireStation fireStation);
+	public FireStation save(FireStation fireStation);
 
 	public FireStation update(FireStation fireStation);
 
@@ -15,5 +15,7 @@ public interface FireStationService {
 	public List<String> findAddressByStationNumber(int stationNumber);
 
 	public Integer findStationNumberByAddress(String Address);
+
+	public FireStation findByAddressANDStationNumber(String adresse, int stationNumber);
 
 }

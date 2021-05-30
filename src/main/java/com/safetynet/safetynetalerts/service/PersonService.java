@@ -6,7 +6,7 @@ import com.safetynet.safetynetalerts.model.Person;
 
 public interface PersonService {
 
-	public List<Person> findByFirstNameANDLastName(String firstName, String lastName);
+	public Person findByFirstNameANDLastName(String firstName, String lastName);
 
 	public List<Person> findAllByAddress(String address);
 

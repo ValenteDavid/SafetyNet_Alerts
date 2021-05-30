@@ -13,14 +13,14 @@ public class PersonDaoImpl implements PersonDao {
 	public static List<Person> persons;
 
 	@Override
-	public List<Person> findByFirstNameANDLastName(String firstName, String lastName) {
-		List<Person> listPersons = persons.stream()
+	public Person findByFirstNameANDLastName(String firstName, String lastName) {
+		Person personFound = persons.stream()
 				.filter(person -> (person.getFirstName().contentEquals(firstName)))
 				.filter(person -> (person.getLastName().contentEquals(lastName)))
-				.distinct()
-				.collect(Collectors.toList());
-		
-		return listPersons;
+				.findFirst()
+				.get();
+
+		return personFound;
 	}
 
 	@Override
@@ -30,12 +30,14 @@ public class PersonDaoImpl implements PersonDao {
 
 	@Override
 	public Person save(Person person) {
-		return null;
+		return persons.add(person)?person:null;
 	}
 
 	@Override
 	public Person update(Person person) {
-		return null;
+		persons.remove(findByFirstNameANDLastName(person.getFirstName(),person.getLastName()));
+		persons.add(person);
+		return person;
 	}
 
 	@Override

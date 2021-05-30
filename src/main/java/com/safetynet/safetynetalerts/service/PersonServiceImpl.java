@@ -15,7 +15,7 @@ public class PersonServiceImpl implements PersonService {
 	private PersonDao personDao;
 
 	@Override
-	public List<Person> findByFirstNameANDLastName(String firstName, String lastName) {
+	public Person findByFirstNameANDLastName(String firstName, String lastName) {
 		return personDao.findByFirstNameANDLastName(firstName, lastName);
 	}
 
@@ -31,16 +31,17 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public Person save(Person person) {
-		return null;
+		return personDao.save(person);
 	}
 
 	@Override
 	public Person update(Person person) {
-		return null;
+		return personDao.update(person);
 	}
 
 	@Override
 	public void delete(Person person) {
+		personDao.delete(person);
 	}
 
 	@Override

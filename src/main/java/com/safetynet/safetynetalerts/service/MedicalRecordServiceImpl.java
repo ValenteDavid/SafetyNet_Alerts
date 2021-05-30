@@ -26,7 +26,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
 	@Override
 	public MedicalRecord save(MedicalRecord medicalRecord) {
-		return null;
+		return medicalRecordDao.save(medicalRecord);
 	}
 
 	@Override

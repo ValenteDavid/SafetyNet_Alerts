@@ -13,10 +13,12 @@ public class MedicalRecordImpl implements MedicalRecordDao {
 
 	@Override
 	public MedicalRecord findByFirstNameANDLastName(String firstName, String lastName) {
-		return medicalRecords.stream()
+		MedicalRecord medicalRecord = medicalRecords.stream()
 				.filter(x -> firstName.equals(x.getFirstName()))
 				.filter(x -> lastName.equals(x.getLastName()))
-				.findFirst().orElse(null);
+				.findFirst()
+				.get();
+		return medicalRecord;
 	}
 
 	@Override
@@ -26,7 +28,7 @@ public class MedicalRecordImpl implements MedicalRecordDao {
 
 	@Override
 	public MedicalRecord save(MedicalRecord medicalRecord) {
-		return null;
+		return medicalRecords.add(medicalRecord)?medicalRecord:null;
 	}
 
 	@Override

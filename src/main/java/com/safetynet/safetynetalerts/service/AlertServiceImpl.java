@@ -2,6 +2,7 @@ package com.safetynet.safetynetalerts.service;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -42,9 +43,10 @@ public class AlertServiceImpl implements AlertService {
 	
 	@Override
 	public List<Person> listPersonByFirstNameANDLastName(String firstName, String lastName) {
-		return personService.findByFirstNameANDLastName(firstName, lastName);
+		 List<Person> list = new ArrayList<Person>();
+		 list.add(personService.findByFirstNameANDLastName(firstName, lastName));
+		return list;
 	}
-
 
 	@Override
 	public List<Person> listPersonByCity(String city) {
@@ -77,16 +79,7 @@ public class AlertServiceImpl implements AlertService {
 	}
 
 	private PersonType getPersonType(Person person) {
-
-		int age = ageOfPersonByPerson(person);
-
-		if (age <= PersonType.CHILD.getMaxAge()) {
-			return PersonType.CHILD;
-		} else if (age <= PersonType.ADULT.getMaxAge()) {
-			return PersonType.ADULT;
-		}
-
-		return null;
+		return PersonType.get(ageOfPersonByPerson(person));
 	}
 
 	private boolean isChildren(Person person) {

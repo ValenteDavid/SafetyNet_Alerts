@@ -41,7 +41,10 @@ public class FireStationImpl implements FireStationDao {
 
 	@Override
 	public FireStation save(FireStation fireStation) {
-		return null;
+		FireStation firestationAdd = null;
+		firestationAdd = fireStations.add(fireStation)?fireStation:null;
+		DataFile.saveFile();
+		return firestationAdd;
 	}
 
 	@Override

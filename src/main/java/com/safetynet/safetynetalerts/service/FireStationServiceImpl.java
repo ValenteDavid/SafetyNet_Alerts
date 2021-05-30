@@ -15,8 +15,8 @@ public class FireStationServiceImpl implements FireStationService {
 	private FireStationDao fireStationDao;
 
 	@Override
-	public FireStation add(FireStation fireStation) {
-		return null;
+	public FireStation save(FireStation fireStation) {
+		return fireStationDao.save(fireStation);
 	}
 
 	@Override
@@ -36,6 +36,11 @@ public class FireStationServiceImpl implements FireStationService {
 	@Override
 	public Integer findStationNumberByAddress(String Address) {
 		return fireStationDao.findStationNumberByAddress(Address);
+	}
+
+	public FireStation findByAddressANDStationNumber(String adresse, int stationNumber) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
