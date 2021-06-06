@@ -57,12 +57,22 @@ public class PersonController {
 
 	@PutMapping(path)
 	public Person update(@Valid @RequestBody Person person) {
-		return personService.update(person);
+		Person personSave = personService.update(person);
+		
+		if (personSave == null) {
+			throw new NotFoundException(
+					"No found to update this person : " + personSave);
+		}
+		return personSave;
 	}
 
 	@DeleteMapping(path+"/{firstName}&{lastName}")
 	public void delete(@PathVariable String firstName, @PathVariable String lastName) {
-		personService.delete(personService.findByFirstNameANDLastName(firstName, lastName));
+		if (!personService.delete(firstName, lastName)) {
+			throw new NotFoundException(
+					"No one found at this first name : " + firstName + " last name : " + lastName);
+		}
+		personService.delete(firstName, lastName);
 	}
 	
 }

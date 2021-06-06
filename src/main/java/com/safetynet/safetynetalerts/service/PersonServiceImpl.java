@@ -40,8 +40,8 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public void delete(Person person) {
-		personDao.delete(person);
+	public boolean delete(String firstName, String lastName) {
+		return personDao.delete(personDao.findByFirstNameANDLastName(firstName, lastName));
 	}
 
 	@Override

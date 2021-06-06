@@ -10,7 +10,7 @@ public interface FireStationService {
 
 	public FireStation update(FireStation fireStation);
 
-	public void delete(String adresse, int stationNumber);
+	public boolean delete(String adresse, int stationNumber);
 
 	public List<String> findAddressByStationNumber(int stationNumber);
 

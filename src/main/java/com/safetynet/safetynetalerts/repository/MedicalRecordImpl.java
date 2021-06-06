@@ -13,17 +13,17 @@ public class MedicalRecordImpl implements MedicalRecordDao {
 
 	@Override
 	public MedicalRecord findByFirstNameANDLastName(String firstName, String lastName) {
-		MedicalRecord medicalRecord = medicalRecords.stream()
+		MedicalRecord medicalRecord;
+			medicalRecord = medicalRecords.stream()
 				.filter(x -> firstName.equals(x.getFirstName()))
 				.filter(x -> lastName.equals(x.getLastName()))
-				.findFirst()
-				.get();
+				.findFirst().orElse(null);
 		return medicalRecord;
 	}
-
+	
 	@Override
 	public List<MedicalRecord> findAll() {
-		return null;
+		return medicalRecords;
 	}
 
 	@Override
@@ -33,12 +33,28 @@ public class MedicalRecordImpl implements MedicalRecordDao {
 
 	@Override
 	public MedicalRecord update(MedicalRecord medicalRecord) {
-		return null;
+		MedicalRecord medicalRecordUpadate;
+		medicalRecordUpadate = medicalRecords.stream()
+				.filter(x -> medicalRecord.getFirstName().equals(x.getFirstName()))
+				.filter(x -> medicalRecord.getLastName().equals(x.getLastName()))
+				.findFirst().orElse(null);
+		
+		if (medicalRecordUpadate !=null) {
+			medicalRecords.remove(medicalRecordUpadate);
+			medicalRecords.add(medicalRecord);
+			DataFile.saveFile();
+			return medicalRecord;
+		}
+		else {
+			return null;
+		}
 	}
 
 	@Override
-	public void delete(MedicalRecord medicalRecord) {
-
+	public boolean delete(MedicalRecord medicalRecord) {
+		boolean response = medicalRecord==null?false:medicalRecords.remove(medicalRecord);
+		DataFile.saveFile();
+		return response;
 	}
 
 }

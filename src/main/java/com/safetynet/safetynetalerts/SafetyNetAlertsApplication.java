@@ -8,22 +8,26 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 
 import com.safetynet.safetynetalerts.repository.DataFile;
+import com.safetynet.safetynetalerts.repository.FireStationImpl;
 
 @SpringBootApplication
 public class SafetyNetAlertsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SafetyNetAlertsApplication.class, args);
+		System.out.println(new FireStationImpl().findStationNumberByAddress("a"));
 	}
 
 	@Bean
 	@Profile("dev")
-	CommandLineRunner runner() {
+	CommandLineRunner runner(Environment env) {
+		
 		return args -> {
-			File fileUse = new File("src/main/resources/data.json");
-			File fileLoad = new File("src/main/resources/data-test.json");
+			File fileUse = new File(env.getProperty("datafile.filepath.use"));
+			File fileLoad = new File(env.getProperty("datafile.filepath.source"));
 			if (fileUse.exists()) {
 				fileUse.delete();
 			}
@@ -32,8 +36,9 @@ public class SafetyNetAlertsApplication {
 	}
 	
 	@Bean
-	CommandLineRunner runner_start() {
+	CommandLineRunner runner_start(Environment env) {
 		return args -> {
+			DataFile.setFilepathuse(env.getProperty("datafile.filepath.use"));
 			DataFile.loadFile();
 		};
 		

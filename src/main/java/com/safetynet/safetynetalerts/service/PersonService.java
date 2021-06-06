@@ -16,7 +16,7 @@ public interface PersonService {
 
 	public Person update(Person person);
 
-	public void delete(Person person);
+	public boolean delete(String firstName, String lastName);
 
 	public List<Person> findByCity(String city);
 }

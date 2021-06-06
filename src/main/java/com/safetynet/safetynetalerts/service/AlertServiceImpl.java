@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.safetynet.safetynetalerts.controller.exceptions.NotFoundException;
 import com.safetynet.safetynetalerts.model.MedicalRecord;
 import com.safetynet.safetynetalerts.model.Person;
 import com.safetynet.safetynetalerts.model.PersonType;
@@ -27,12 +28,10 @@ public class AlertServiceImpl implements AlertService {
 
 	@Override
 	public List<Person> listPersonByStationNumber(int stationNumber) {
-
 		List<Person> listPersons = fireStationService.findAddressByStationNumber(stationNumber).stream()
 				.map(address -> personService.findAllByAddress(address))
 				.flatMap(listAll -> listAll.stream())
 				.collect(Collectors.toList());
-
 		return listPersons;
 	}
 
@@ -70,10 +69,14 @@ public class AlertServiceImpl implements AlertService {
 	}
 
 	@Override
-	public int ageOfPersonByPerson(Person person) {
-		Date birthdate = medicalRecordService.findByFirstNameANDLastName(
+	public int ageOfPersonByPerson(Person person) throws NotFoundException {
+		MedicalRecord medicalRecord = medicalRecordService.findByFirstNameANDLastName(
 				person.getFirstName(),
-				person.getLastName()).getBirthdate();
+				person.getLastName());
+		if (medicalRecord == null) {
+			throw new NotFoundException("This " + person + " don't have birthdate");
+		}
+		Date birthdate = medicalRecord.getBirthdate();
 		int age = ageOfPersonByBirthdate(birthdate);
 		return age;
 	}
@@ -92,7 +95,6 @@ public class AlertServiceImpl implements AlertService {
 
 	@Override
 	public List<Person> listChildren(List<Person> listPersons) {
-
 		List<Person> listChildren = listPersons.stream()
 				.filter(person -> isChildren(person))
 				.collect(Collectors.toList());

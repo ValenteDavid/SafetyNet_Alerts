@@ -9,6 +9,8 @@ import javax.validation.constraints.Past;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Component
 public class MedicalRecord {
 
@@ -49,6 +51,7 @@ public class MedicalRecord {
 		this.lastName = lastName;
 	}
 
+	@JsonFormat(pattern="dd/MM/yyyy")
 	public Date getBirthdate() {
 		return birthdate;
 	}

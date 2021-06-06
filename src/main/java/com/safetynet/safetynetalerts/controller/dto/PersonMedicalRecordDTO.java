@@ -2,6 +2,7 @@ package com.safetynet.safetynetalerts.controller.dto;
 
 import java.util.Arrays;
 
+import com.safetynet.safetynetalerts.controller.exceptions.NotFoundException;
 import com.safetynet.safetynetalerts.model.MedicalRecord;
 import com.safetynet.safetynetalerts.model.Person;
 
@@ -79,7 +80,7 @@ public class PersonMedicalRecordDTO {
 				+ Arrays.toString(medications) + ", allergies=" + Arrays.toString(allergies) + "]";
 	}
 
-	public static PersonMedicalRecordDTO convertToDto(Person person, MedicalRecord medicalRecord, int age) {
+	public static PersonMedicalRecordDTO convertToDto(Person person, MedicalRecord medicalRecord, int age){
 		return new PersonMedicalRecordDTO(person.getLastName(), person.getPhone(), age, medicalRecord.getMedications(),
 				medicalRecord.getAllergies());
 	}

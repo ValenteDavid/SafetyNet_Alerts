@@ -26,20 +26,19 @@ public class FireStationController {
 
 	@Autowired
 	private FireStationService fireStationService;
-	
-	@GetMapping(path+"/{address}&{stationNumber}")
-	public FireStation get(@PathVariable String adresse, @PathVariable int stationNumber) {
-		
-		System.out.println(adresse +" " + stationNumber );
-		FireStation firestationFound = fireStationService.findByAddressANDStationNumber(adresse, stationNumber);
-		
+
+	@GetMapping(path + "/{address}&{stationNumber}")
+	public FireStation get(@PathVariable String address, @PathVariable int stationNumber) {
+		FireStation firestationFound = fireStationService.findByAddressANDStationNumber(address, stationNumber);
+
 		if (firestationFound == null) {
-			throw new NotFoundException("No one found at this adresse : " + adresse + " stationNumber : " + stationNumber);
+			throw new NotFoundException(
+					"No one found at this adresse : " + address + " stationNumber : " + stationNumber);
 		}
 
 		return firestationFound;
 	}
-	
+
 	@PostMapping(path)
 	public ResponseEntity<Void> save(@Valid @RequestBody FireStation fireStation) {
 		FireStation firestationSave = fireStationService.save(fireStation);
@@ -50,7 +49,7 @@ public class FireStationController {
 		URI location = ServletUriComponentsBuilder
 				.fromCurrentRequest()
 				.path("/{address}&{stationNumber}")
-				.buildAndExpand(firestationSave.getAddress(),fireStation.getStationNumber())
+				.buildAndExpand(firestationSave.getAddress(), fireStation.getStationNumber())
 				.toUri();
 
 		return ResponseEntity.created(location).build();
@@ -58,12 +57,21 @@ public class FireStationController {
 
 	@PutMapping(path)
 	public FireStation update(@Valid @RequestBody FireStation fireStation) {
-		return fireStationService.update(fireStation);
+		FireStation firestationSave = fireStationService.update(fireStation);
+		
+		if (firestationSave == null) {
+			throw new NotFoundException(
+					"No found to update this fireStation : " + fireStation);
+		}
+		return firestationSave;
 	}
 
 	@DeleteMapping(path + "/{address}&{stationNumber}")
-	public void delete(@PathVariable String adresse, @PathVariable int stationNumber) {
-		fireStationService.delete(adresse, stationNumber);
+	public void delete(@PathVariable String address, @PathVariable int stationNumber) {
+		if (!fireStationService.delete(address, stationNumber)) {
+			throw new NotFoundException(
+					"No one found at this adresse : " + address + " stationNumber : " + stationNumber);
+		}
 	}
 
 }

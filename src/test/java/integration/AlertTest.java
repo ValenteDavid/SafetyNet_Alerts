@@ -63,7 +63,7 @@ public class AlertTest {
 
 	@Test
 	public void testfireAlert_ReturnContent_ValidArgument() throws Exception {
-		String address = "1509 Culver St";
+		String address = "947 E. Rose Dr";
 
 		mockMvc.perform(get("/fire")
 				.param("address", address))
@@ -75,7 +75,7 @@ public class AlertTest {
 				.andExpect(jsonPath("$.persons[*].medications", IsAnything.anything()))
 				.andExpect(jsonPath("$.persons[*].allergies", IsAnything.anything()))
 
-				.andExpect(jsonPath("$.stationNumber", is(3)));
+				.andExpect(jsonPath("$.stationNumber", is(1)));
 	}
 
 	@Test
@@ -117,14 +117,14 @@ public class AlertTest {
 				.andExpect(status().isOk())
 
 				.andExpect(jsonPath("$.persons[0].lastName", is("Stelzer")))
-				.andExpect(jsonPath("$.persons[0].address",is("947 E. Rose Dr 97451 Culver")))
-				.andExpect(jsonPath("$.persons[0].age", is(6)))
+				.andExpect(jsonPath("$.persons[0].address", is("947 E. Rose Dr 97451 Culver")))
+				.andExpect(jsonPath("$.persons[0].age", IsAnything.anything()))
 				.andExpect(jsonPath("$.persons[0].email", is("bstel@email.com")))
 				.andExpect(jsonPath("$.persons[0].medications[0]", is("noxidian:100mg")))
 				.andExpect(jsonPath("$.persons[0].medications[1]", is("pharmacol:2500mg")))
 				.andExpect(jsonPath("$.persons[0].allergies", IsAnything.anything()));
 	}
-	
+
 	@Test
 	public void testfindCommunityEmailByCity_ReturnContent_ValidArgument() throws Exception {
 		String city = "Culver";
@@ -134,20 +134,20 @@ public class AlertTest {
 				.andExpect(status().isOk())
 
 				.andExpect(jsonPath("$.email", contains(
-				 "jaboyd@email.com",
-			        "drk@email.com",
-			        "tenz@email.com",
-			        "tcoop@ymail.com",
-			        "lily@email.com",
-			        "soph@email.com",
-			        "ward@email.com",
-			        "zarc@email.com",
-			        "reg@email.com",
-			        "jpeter@email.com",
-			        "aly@imail.com",
-			        "bstel@email.com",
-			        "ssanw@email.com",
-			        "clivfd@ymail.com",
-			        "gramps@email.com")));
+						"jaboyd@email.com",
+						"drk@email.com",
+						"tenz@email.com",
+						"tcoop@ymail.com",
+						"lily@email.com",
+						"soph@email.com",
+						"ward@email.com",
+						"zarc@email.com",
+						"reg@email.com",
+						"jpeter@email.com",
+						"aly@imail.com",
+						"bstel@email.com",
+						"ssanw@email.com",
+						"clivfd@ymail.com",
+						"gramps@email.com")));
 	}
 }

@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,15 +13,21 @@ import com.safetynet.safetynetalerts.model.FireStation;
 import com.safetynet.safetynetalerts.model.MedicalRecord;
 import com.safetynet.safetynetalerts.model.Person;
 
-@PropertySource("classpath:app.data")
-@ConfigurationProperties
 public class DataFile {
+	
+	private static String filepathuse;
 
-	private static String filepath;
+	public static String getFilepathuse() {
+		return filepathuse;
+	}
+
+	public static void setFilepathuse(String filepathuse) {
+		DataFile.filepathuse = filepathuse;
+	}
 
 	public static void loadFile() {
 		try {
-			File fileUse = new File("src/main/resources/data.json");
+			File fileUse = new File(filepathuse);
 
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode jsonNode = mapper.readTree(fileUse);
@@ -54,18 +57,17 @@ public class DataFile {
 
 	public static void saveFile() {
 		try {
-			File fileUse = new File("src/main/resources/data.json");
-			
+			File fileUse = new File(filepathuse);
+
 			FileData fileDTO = new FileData(
 					PersonDaoImpl.persons,
 					FireStationImpl.fireStations,
 					MedicalRecordImpl.medicalRecords);
 
 			ObjectMapper mapper = new ObjectMapper();
-			mapper.writeValue(fileUse,fileDTO);
+			mapper.writeValue(fileUse, fileDTO);
 		} catch (IOException e) {
 		}
 	}
 
 }
-

@@ -31,11 +31,12 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
 	@Override
 	public MedicalRecord update(MedicalRecord medicalRecord) {
-		return null;
+		return medicalRecordDao.update(medicalRecord);
 	}
 
 	@Override
-	public void delete(MedicalRecord medicalRecord) {
+	public boolean delete(String firstName, String lastName) {
+		return medicalRecordDao.delete(medicalRecordDao.findByFirstNameANDLastName(firstName, lastName));
 
 	}
 

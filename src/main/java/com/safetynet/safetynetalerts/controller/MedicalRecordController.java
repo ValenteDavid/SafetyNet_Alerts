@@ -56,12 +56,21 @@ public class MedicalRecordController {
 
 	@PutMapping(path)
 	public MedicalRecord update(@Valid @RequestBody MedicalRecord medicalRecord) {
-		return medicalRecordService.update(medicalRecord);
+		MedicalRecord medicalrecordUpdate = medicalRecordService.update(medicalRecord);
+		
+		if (medicalrecordUpdate == null) {
+			throw new NotFoundException(
+					"No found to update this medical record : " + medicalrecordUpdate);
+		}
+		return medicalrecordUpdate;
 	}
 
 	@DeleteMapping(path +"/{firstName}&{lastName}")
 	public void delete(@PathVariable String firstName, @PathVariable String lastName) {
-		medicalRecordService.delete(medicalRecordService.findByFirstNameANDLastName(firstName, lastName));
+		if (!medicalRecordService.delete(firstName, lastName)) {
+			throw new NotFoundException(
+					"No one found at this first name : " + firstName + " last name : " + lastName);
+		}
 	}
 
 }

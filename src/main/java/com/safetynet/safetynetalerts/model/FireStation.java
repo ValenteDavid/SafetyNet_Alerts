@@ -2,14 +2,14 @@ package com.safetynet.safetynetalerts.model;
 
 import javax.validation.constraints.Min;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 public class FireStation {
 
 	private String address;
-	@JsonAlias(value = "station")
 	@Min(value = 1)
+	@JsonProperty(value = "station")
 	private int stationNumber;
 
 	public FireStation() {

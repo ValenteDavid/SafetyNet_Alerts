@@ -21,11 +21,13 @@ public class FireStationServiceImpl implements FireStationService {
 
 	@Override
 	public FireStation update(FireStation fireStation) {
-		return null;
+		return fireStationDao.update(fireStation);
 	}
 
 	@Override
-	public void delete(String adresse, int stationNumber) {
+	public boolean delete(String adresse, int stationNumber) {
+		return fireStationDao.delete(
+				fireStationDao.findByAddressANDStationNumber(adresse, stationNumber));
 	}
 
 	@Override
@@ -39,8 +41,7 @@ public class FireStationServiceImpl implements FireStationService {
 	}
 
 	public FireStation findByAddressANDStationNumber(String adresse, int stationNumber) {
-		// TODO Auto-generated method stub
-		return null;
+		return fireStationDao.findByAddressANDStationNumber(adresse, stationNumber);
 	}
 
 }
