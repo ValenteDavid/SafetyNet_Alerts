@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,7 +23,6 @@ import com.safetynet.safetynetalerts.controller.dto.PersonInfoAlertDTO;
 import com.safetynet.safetynetalerts.controller.dto.PersonInfoDTO;
 import com.safetynet.safetynetalerts.controller.dto.PersonMedicalRecordDTO;
 import com.safetynet.safetynetalerts.controller.dto.PhoneAlertDTO;
-import com.safetynet.safetynetalerts.controller.exceptions.InvalidArgumentException;
 import com.safetynet.safetynetalerts.controller.exceptions.NotFoundException;
 import com.safetynet.safetynetalerts.model.Person;
 import com.safetynet.safetynetalerts.service.AlertService;
@@ -29,17 +30,21 @@ import com.safetynet.safetynetalerts.service.AlertService;
 @RestController
 public class AlertController {
 
+	private static final Logger log = LoggerFactory.getLogger(AlertController.class);
+
 	@Autowired
 	private AlertService alertService;
 
 	@GetMapping("/firestation")
 	public FireStationAlertDTO findPersonInfoByFireStationNumber(
 			@RequestParam("stationNumber") int stationNumber) {
+		log.info("GET /firestation called");
+		log.debug("Paramameter stationNumber : {}", stationNumber);
+
 		FireStationAlertDTO fireStationAlertDTO = new FireStationAlertDTO();
 
-		validStationNumber(stationNumber);
-
 		List<Person> listPersons = alertService.listPersonByStationNumber(stationNumber);
+		log.debug("listPersons : {}", listPersons);
 
 		if (listPersons == null) {
 			throw new NotFoundException("No one found at this station number : " + stationNumber);
@@ -48,54 +53,64 @@ public class AlertController {
 		List<PersonFireStationAlertDTO> personFireStationAlertDTOs = listPersons.stream()
 				.map(person -> PersonFireStationAlertDTO.convertToDto(person))
 				.collect(Collectors.toList());
-
+		log.debug("personFireStationAlertDTOs : {}", personFireStationAlertDTOs);
 		fireStationAlertDTO.setListPerson(personFireStationAlertDTOs);
-		fireStationAlertDTO.setNumberOfAdults(alertService.numberOfAdult(listPersons));
-		fireStationAlertDTO.setNumberOfChildren(alertService.numberOfChildren(listPersons));
 
-		return fireStationAlertDTO;
+		int numberOfAdult = alertService.numberOfAdult(listPersons);
+		log.debug("numberOfAdult : {}", listPersons);
+		fireStationAlertDTO.setNumberOfAdults(numberOfAdult);
+
+		int numberOfChildren = alertService.numberOfChildren(listPersons);
+		fireStationAlertDTO.setNumberOfChildren(numberOfChildren);
+		log.debug("numberOfChildren : {}", numberOfChildren);
+
+		log.info("GET /firestation response {}",fireStationAlertDTO);
+		return fireStationAlertDTO;		
 	}
 
 	@GetMapping("/childAlert")
 	public ChildAlertDTO childAlert(@RequestParam("address") String address) {
 		ChildAlertDTO childAlertDTO = new ChildAlertDTO();
+		log.info("GET /childAlert called");
 
 		List<Person> listChidren = alertService.listChildren(
 				alertService.listPersonByAddress(address));
-
-		if (listChidren.isEmpty()) {
-			return null;
-		}
-
+		log.debug("listChidren : {}", listChidren);
+		
 		childAlertDTO.setListChildren(listChidren.stream()
 				.map(child -> PersonChildAlertDTO.convertToDto(child, alertService.ageOfPersonByPerson(child)))
 				.collect(Collectors.toList()));
 
+		log.info("GET /childAlert response {}",childAlertDTO);
 		return childAlertDTO;
 	}
 
 	@GetMapping("/phoneAlert")
 	public PhoneAlertDTO phoneAlert(@RequestParam("firestation") int firestation_number) {
 		PhoneAlertDTO phoneAlertDTO = new PhoneAlertDTO();
-
-		validStationNumber(firestation_number);
+		log.info("GET /phoneAlert called");
 
 		List<String> listPhone = alertService.listPersonPhoneByStationNumber(firestation_number);
-
+		log.debug("listPhone : {}", listPhone);
+		
 		if (listPhone == null) {
 			throw new NotFoundException("No found person number at this station number : " + firestation_number);
 		}
 
 		phoneAlertDTO.setListNumbers(listPhone);
 
+		log.info("GET /phoneAlert response {}",phoneAlertDTO);
 		return phoneAlertDTO;
 	}
 
 	@GetMapping("/fire")
 	public FireAlertDTO fireAlert(@RequestParam("address") String address) {
 		FireAlertDTO fireAlertDTO = new FireAlertDTO();
+		log.info("GET /fire called");
 
 		List<Person> listPersons = alertService.listPersonByAddress(address);
+		log.debug("listPersons : {}", listPersons);
+		
 		if (listPersons == null) {
 			throw new NotFoundException("No found person number at this address : " + address);
 		}
@@ -108,29 +123,30 @@ public class AlertController {
 						alertService.ageOfPersonByPerson(person)))
 				.distinct()
 				.collect(Collectors.toList());
-
+		log.debug("personMedicalRecordDTOs : {}", personMedicalRecordDTOs);
 		fireAlertDTO.setListPersonsMedicalRecord(personMedicalRecordDTOs);
 
 		Integer stationNumber = alertService.findStationNumberByAddress(address);
+		log.debug("stationNumber : {}", stationNumber);
 		if (stationNumber == null) {
 			throw new NotFoundException("No found station number at this address : " + address);
 		}
-
 		fireAlertDTO.setStationNumber(stationNumber);
 
+		log.info("GET /fire response {}",fireAlertDTO);
 		return fireAlertDTO;
 	}
 
 	@GetMapping("/flood/stations")
 	public FloodAlertDTO floodAlert(@RequestParam("stations") List<Integer> listOfStationNumbers) {
 		FloodAlertDTO floodAlertDTO = new FloodAlertDTO();
-
-		listOfStationNumbers.forEach(stationNumber -> validStationNumber(stationNumber));
+		log.info("GET /flood called");
 
 		List<String> listAddress = listOfStationNumbers.stream()
 				.map(stationNumber -> alertService.findAddressByStationNumber(stationNumber))
 				.flatMap(allSationNumber -> allSationNumber.stream())
 				.collect(Collectors.toList());
+		log.debug("listAddress : {}", listAddress);
 
 		if (listAddress.isEmpty()) {
 			throw new NotFoundException("No found any address at this list station number : " + listOfStationNumbers);
@@ -149,8 +165,10 @@ public class AlertController {
 										person.getFirstName(), person.getLastName()),
 								alertService.ageOfPersonByPerson(person)))
 						.collect(Collectors.toList())));
+		log.debug("mapAddressPerson : {}", mapAddressPerson);
 		floodAlertDTO.setMapAddressPerson(mapAddressPerson);
 
+		log.info("GET /flood response {}",floodAlertDTO);
 		return floodAlertDTO;
 	}
 
@@ -158,10 +176,12 @@ public class AlertController {
 	public PersonInfoAlertDTO findPersonInfoByFirstnameAndLastname(
 			@RequestParam("firstName") String firstName,
 			@RequestParam("lastName") String lastName) {
+		log.info("GET /personInfo called");
 		PersonInfoAlertDTO personInfoAlertDTO = new PersonInfoAlertDTO();
 
 		List<Person> listPersons = alertService.listPersonByFirstNameANDLastName(firstName, lastName);
-
+		log.debug("listPersons : {}", listPersons);
+		
 		if (listPersons.isEmpty()) {
 			throw new NotFoundException(
 					"No person has been found with this first name : " + firstName + " and last name : " + lastName);
@@ -174,27 +194,23 @@ public class AlertController {
 								alertService.listMedicalRecordByFirstNameANDLastName(firstName, lastName),
 								alertService.ageOfPersonByPerson(person)))
 						.collect(Collectors.toList()));
-
+		
+		log.info("GET /personInfo response {}",personInfoAlertDTO);
 		return personInfoAlertDTO;
 	}
 
 	@GetMapping("/communityEmail")
 	public CommunityEmailAlertDTO findCommunityEmailByCity(@RequestParam("city") String city) {
 		CommunityEmailAlertDTO communityEmailAlertDTO = new CommunityEmailAlertDTO();
-		
+		log.info("GET /communityEmail called");
+
 		List<String> listEmail = alertService.listEmail(alertService.listPersonByCity(city));
+		log.debug("listEmail : {}", listEmail);
 		
 		communityEmailAlertDTO.setListEmail(listEmail);
-		
-		return communityEmailAlertDTO;
-	}
 
-	//TODO Deplacer
-	private void validStationNumber(int stationNumber) {
-		if (stationNumber <= 0) {
-			throw new InvalidArgumentException(
-					"The station number cannot be less than or equal to 0 : " + stationNumber);
-		}
+		log.info("GET /communityEmail response {}",communityEmailAlertDTO);
+		return communityEmailAlertDTO;
 	}
 
 }

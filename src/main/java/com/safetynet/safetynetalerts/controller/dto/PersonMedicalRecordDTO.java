@@ -2,7 +2,6 @@ package com.safetynet.safetynetalerts.controller.dto;
 
 import java.util.Arrays;
 
-import com.safetynet.safetynetalerts.controller.exceptions.NotFoundException;
 import com.safetynet.safetynetalerts.model.MedicalRecord;
 import com.safetynet.safetynetalerts.model.Person;
 

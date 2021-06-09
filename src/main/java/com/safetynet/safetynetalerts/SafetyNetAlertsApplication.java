@@ -11,20 +11,17 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 
 import com.safetynet.safetynetalerts.repository.DataFile;
-import com.safetynet.safetynetalerts.repository.FireStationImpl;
 
 @SpringBootApplication
 public class SafetyNetAlertsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SafetyNetAlertsApplication.class, args);
-		System.out.println(new FireStationImpl().findStationNumberByAddress("a"));
 	}
 
 	@Bean
 	@Profile("dev")
 	CommandLineRunner runner(Environment env) {
-		
 		return args -> {
 			File fileUse = new File(env.getProperty("datafile.filepath.use"));
 			File fileLoad = new File(env.getProperty("datafile.filepath.source"));
@@ -43,4 +40,5 @@ public class SafetyNetAlertsApplication {
 		};
 		
 	}
+
 }

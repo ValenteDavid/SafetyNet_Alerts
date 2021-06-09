@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "datafile.filepath.use",
+    "type": "java.lang.String",
+    "description": "A description for 'datafile.filepath.use'"
+  },
+  {
+    "name": "datafile.filepath.source",
+    "type": "java.lang.String",
+    "description": "A description for 'datafile.filepath.source'"
+  }
+]}

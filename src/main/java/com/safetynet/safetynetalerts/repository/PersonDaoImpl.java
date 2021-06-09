@@ -1,12 +1,10 @@
 package com.safetynet.safetynetalerts.repository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
-import com.safetynet.safetynetalerts.model.FireStation;
 import com.safetynet.safetynetalerts.model.Person;
 
 @Repository

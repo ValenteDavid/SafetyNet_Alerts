@@ -3,7 +3,6 @@ package com.safetynet.safetynetalerts.repository;
 import java.util.List;
 
 import com.safetynet.safetynetalerts.model.FireStation;
-import com.safetynet.safetynetalerts.model.MedicalRecord;
 
 public interface FireStationDao {
 

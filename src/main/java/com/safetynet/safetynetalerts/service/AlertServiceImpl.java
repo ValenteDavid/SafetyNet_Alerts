@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import com.safetynet.safetynetalerts.model.PersonType;
 
 @Service
 public class AlertServiceImpl implements AlertService {
+	private static final Logger log = LoggerFactory.getLogger(AlertServiceImpl.class);
 
 	@Autowired
 	private PersonService personService;
@@ -54,6 +57,7 @@ public class AlertServiceImpl implements AlertService {
 
 	@Override
 	public int ageOfPersonByBirthdate(Date birthdate) {
+		log.debug("ageOfPersonByBirthdate call, birthdate : {}",birthdate);
 		Calendar birthdateCalendar = Calendar.getInstance();
 		birthdateCalendar.setTime(birthdate);
 
@@ -64,20 +68,29 @@ public class AlertServiceImpl implements AlertService {
 		LocalDate nowLocale = LocalDate.now();
 
 		int age = Period.between(birthdateLocale, nowLocale).getYears();
-
+		log.debug("ageOfPersonByBirthdate return : {} ",birthdate);
 		return age;
 	}
 
 	@Override
 	public int ageOfPersonByPerson(Person person) throws NotFoundException {
+		log.debug("ageOfPersonByPerson call, person : {}",person);
+
 		MedicalRecord medicalRecord = medicalRecordService.findByFirstNameANDLastName(
 				person.getFirstName(),
 				person.getLastName());
+		log.trace("medicalRecord : {}",medicalRecord);
+		
 		if (medicalRecord == null) {
+			log.error("This {} don't have birthdate",person);
 			throw new NotFoundException("This " + person + " don't have birthdate");
 		}
+		
 		Date birthdate = medicalRecord.getBirthdate();
+		log.trace("birthdate : {}",birthdate);
+		
 		int age = ageOfPersonByBirthdate(birthdate);
+		log.debug("ageOfPersonByPerson return : {}",age);
 		return age;
 	}
 
@@ -104,7 +117,6 @@ public class AlertServiceImpl implements AlertService {
 
 	@Override
 	public List<Person> listAdult(List<Person> listPersons) {
-
 		List<Person> listAdult = listPersons.stream()
 				.filter(person -> isAdult(person))
 				.collect(Collectors.toList());
@@ -133,7 +145,6 @@ public class AlertServiceImpl implements AlertService {
 
 	@Override
 	public List<String> listPersonPhoneByStationNumber(int stationNumber) {
-
 		List<String> setPhone = listPersonByStationNumber(stationNumber).stream()
 				.map(person -> person.getPhone())
 				.distinct()

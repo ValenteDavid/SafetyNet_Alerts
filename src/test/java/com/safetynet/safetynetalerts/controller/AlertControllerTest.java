@@ -40,10 +40,11 @@ public class AlertControllerTest {
 				.andExpect(status().isOk());
 	}
 
-	@ParameterizedTest(name = "stationNumber : {0}")
-	@ValueSource(strings = { "aaa", "-1" })
-	public void testfindPersonInfoByFireStationNumber_Status_InvalidFormatArgument(String stationNumber)
+	@Test
+	public void testfindPersonInfoByFireStationNumber_Status_InvalidFormatArgument()
 			throws Exception {
+		String stationNumber = "aaa";
+
 		mockMvc.perform(get("/firestation")
 				.param("stationNumber", stationNumber))
 				.andExpect(status().isBadRequest());
@@ -69,9 +70,9 @@ public class AlertControllerTest {
 				.andExpect(status().isOk());
 	}
 
-	@ParameterizedTest(name = "firestation : {0}")
-	@ValueSource(strings = { "aaa", "-1" })
-	public void testphoneAlert_Status_InvalidFormatArgument(String firestation) throws Exception {
+	@Test
+	public void testphoneAlert_Status_InvalidFormatArgument() throws Exception {
+		String firestation = "aaa";
 		mockMvc.perform(get("/phoneAlert")
 				.param("firestation", firestation))
 				.andExpect(status().isBadRequest());
@@ -98,10 +99,21 @@ public class AlertControllerTest {
 	}
 
 	@Test
-	public void testfireAlert_Status_NotFound() throws Exception {
+	public void testfireAlert_Status_NotFoundPersons() throws Exception {
 		String address = "anyAddress";
 		when(alertService.listPersonByAddress(address)).thenReturn(null);
 
+		mockMvc.perform(get("/fire")
+				.param("address", address))
+				.andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void testfireAlert_Status_NotFoundStationNumber() throws Exception {
+		String address = "anyAddress";
+		when(alertService.findStationNumberByAddress(address)).thenReturn(null);
+		when(alertService.listPersonByAddress(address)).thenReturn(Mockito.<Person>anyList());
+		
 		mockMvc.perform(get("/fire")
 				.param("address", address))
 				.andExpect(status().isNotFound());
@@ -112,10 +124,10 @@ public class AlertControllerTest {
 		String listOfStationNumbers = "1,2";
 		List<Person> listPersons = new ArrayList<>();
 		listPersons.add(new Person("firstName", "lastName"));
-		
+
 		List<String> listAddresses = new ArrayList<>();
 		listAddresses.add("address");
-		
+
 		when(alertService.findAddressByStationNumber(1)).thenReturn(listAddresses);
 		when(alertService.findAddressByStationNumber(2)).thenReturn(listAddresses);
 		when(alertService.listPersonByAddress("address")).thenReturn(listPersons);
@@ -130,7 +142,7 @@ public class AlertControllerTest {
 	}
 
 	@ParameterizedTest(name = "listOfStationNumbers : {0}")
-	@ValueSource(strings = { "aaa", "-1","1,aaa","-1,1" })
+	@ValueSource(strings = { "aaa", "1,bbb"})
 	public void testfloodAlert_Status_InvalidFormatArgument(String listOfStationNumbers) throws Exception {
 
 		when(alertService.findAddressByStationNumber(Mockito.anyInt())).thenReturn(new ArrayList<>());
@@ -157,18 +169,20 @@ public class AlertControllerTest {
 	}
 
 	@ParameterizedTest(name = "firstName : {0} ,lastName : {1}")
-	@CsvSource({"Firstname,Lastname","First-Name,Last-Name","First Name,Last Name" })
-	public void testfindPersonInfoByFirstnameAndLastname_Status_ValidArgument(String firstName,String lastName) throws Exception {
-		
+	@CsvSource({ "Firstname,Lastname", "First-Name,Last-Name", "First Name,Last Name" })
+	public void testfindPersonInfoByFirstnameAndLastname_Status_ValidArgument(String firstName, String lastName)
+			throws Exception {
+
 		List<Person> listPerson = new ArrayList<Person>();
 		Person person = new Person(firstName, lastName);
 		listPerson.add(person);
 		MedicalRecord medicalRecord = new MedicalRecord(firstName, lastName, null, null, null);
-		when(alertService.listPersonByFirstNameANDLastName(Mockito.anyString(),Mockito.anyString())).thenReturn(listPerson);
-		
+		when(alertService.listPersonByFirstNameANDLastName(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(listPerson);
+
 		when(alertService.listMedicalRecordByFirstNameANDLastName(firstName, lastName)).thenReturn(medicalRecord);
 		when(alertService.ageOfPersonByPerson(person)).thenReturn(1);
-		
+
 		mockMvc.perform(get("/personInfo")
 				.param("firstName", firstName)
 				.param("lastName", lastName))
@@ -179,7 +193,7 @@ public class AlertControllerTest {
 	public void testfindPersonInfoByFirstnameAndLastname_Status_NotFound() throws Exception {
 		String firstName = "Firstname";
 		String lastName = "Lastname";
-		
+
 		when(alertService.listPersonByFirstNameANDLastName(firstName, lastName)).thenReturn(new ArrayList<>());
 
 		mockMvc.perform(get("/personInfo")
