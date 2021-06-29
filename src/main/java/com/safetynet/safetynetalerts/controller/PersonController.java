@@ -33,8 +33,7 @@ public class PersonController {
 
 	@GetMapping(path + "/{firstName}&{lastName}")
 	public Person get(@PathVariable String firstName, @PathVariable String lastName) {
-		log.info("GET {} called", path + "/{firstName}&{lastName}");
-		log.debug("Paramameter firstName : {}, lastName : {}", firstName, lastName);
+		log.info("GET {}/{}&{} called", path, firstName, lastName);
 
 		Person personFound = personService.findByFirstNameANDLastName(firstName, lastName);
 		log.debug("personFound : {}", personFound);
@@ -43,14 +42,13 @@ public class PersonController {
 			throw new NotFoundException("No one found at this firstName : " + firstName + " lastName : " + lastName);
 		}
 
-		log.info("GET {} response : {}", path + "/{firstName}&{lastName}", personFound);
+		log.info("GET {}/{}&{} response body : {}", path, firstName, lastName,personFound);
 		return personFound;
 	}
 
 	@PostMapping(path)
 	public ResponseEntity<Void> save(@Valid @RequestBody Person person) {
-		log.info("POST {} called", path);
-		log.debug("Paramameter person : {}", person);
+		log.info("POST {} called body : {} ", path, person);
 
 		Person personSave = personService.save(person);
 		log.debug("personSave : {}", personSave);
@@ -71,8 +69,7 @@ public class PersonController {
 
 	@PutMapping(path)
 	public Person update(@Valid @RequestBody Person person) {
-		log.info("PUT {} called", path);
-		log.debug("Paramameter person : {}", person);
+		log.info("PUT {} called body : {}", path, person);
 
 		Person personUpdate = personService.update(person);
 		log.debug("personUpdate : {}", personUpdate);
@@ -82,20 +79,19 @@ public class PersonController {
 					"No found to update this person : " + personUpdate);
 		}
 
-		log.info("PUT {} response : {}", path, personUpdate);
+		log.info("PUT {} response body : {}", path, personUpdate);
 		return personUpdate;
 	}
 
 	@DeleteMapping(path + "/{firstName}&{lastName}")
 	public void delete(@PathVariable String firstName, @PathVariable String lastName) {
-		log.info("DELETE {} called", path + "/{firstName}&{lastName}");
-		log.debug("Paramameter firstName : {}, lastName : {}", firstName, lastName);
+		log.info("DELETE {}/{}&{} called", path, firstName, lastName);
 
 		if (!personService.delete(firstName, lastName)) {
 			throw new NotFoundException(
 					"No one found at this first name : " + firstName + " last name : " + lastName);
 		}
 
-		log.info("DELETE {} end", path);
+		log.info("DELETE {}/{}&{} end", path, firstName, lastName);
 	}
 }

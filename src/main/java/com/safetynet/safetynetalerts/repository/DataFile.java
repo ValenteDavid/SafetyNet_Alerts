@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +18,8 @@ import com.safetynet.safetynetalerts.model.Person;
 
 public class DataFile {
 	
+	private static final Logger log = LoggerFactory.getLogger(DataFile.class);
+
 	private static String filepathuse;
 
 	public static String getFilepathuse() {
@@ -52,6 +57,7 @@ public class DataFile {
 			});
 			MedicalRecordImpl.medicalRecords = medicalRecords;
 		} catch (IOException e) {
+			log.error("Error load file", e);
 		}
 	}
 
@@ -67,6 +73,7 @@ public class DataFile {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.writeValue(fileUse, fileDTO);
 		} catch (IOException e) {
+			log.error("Error save file", e);
 		}
 	}
 

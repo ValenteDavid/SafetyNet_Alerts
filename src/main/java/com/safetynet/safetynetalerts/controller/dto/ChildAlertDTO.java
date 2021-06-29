@@ -26,6 +26,9 @@ public class ChildAlertDTO {
 		this.listChildren = listChildren;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "ChildAlertDTO [listChildren=" + listChildren + "]";
+	}
 
 }

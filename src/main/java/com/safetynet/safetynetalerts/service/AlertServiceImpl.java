@@ -82,7 +82,6 @@ public class AlertServiceImpl implements AlertService {
 		log.trace("medicalRecord : {}",medicalRecord);
 		
 		if (medicalRecord == null) {
-			log.error("This {} don't have birthdate",person);
 			throw new NotFoundException("This " + person + " don't have birthdate");
 		}
 		

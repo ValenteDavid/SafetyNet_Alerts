@@ -54,7 +54,6 @@ class AlertServiceImplTest {
 		int ageResult = alertServiceImpl.ageOfPersonByPerson(person);
 
 		assertEquals(ageExpect, ageResult);
-
 	}
 
 }

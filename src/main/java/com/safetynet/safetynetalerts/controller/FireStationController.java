@@ -33,8 +33,7 @@ public class FireStationController {
 
 	@GetMapping(path + "/{address}&{stationNumber}")
 	public FireStation get(@PathVariable String address, @PathVariable int stationNumber) {
-		log.info("GET {} called", path + "/{address}&{stationNumber}");
-		log.debug("Paramameter address : {}, stationNumber : {}", address, stationNumber);
+		log.info("GET {}/{}&{} called", path, address, stationNumber);
 		
 		FireStation firestationFound = fireStationService.findByAddressANDStationNumber(address, stationNumber);
 		log.debug("firestationFound : {}", firestationFound);
@@ -44,14 +43,13 @@ public class FireStationController {
 					"No one found at this adresse : " + address + " stationNumber : " + stationNumber);
 		}
 
-		log.info("GET {} response : {}", path + "/{address}&{stationNumber}", firestationFound);
+		log.info("GET {}/{}&{} response body : {}", path, address, stationNumber,firestationFound);
 		return firestationFound;
 	}
 
 	@PostMapping(path)
 	public ResponseEntity<Void> save(@Valid @RequestBody FireStation fireStation) {
-		log.info("POST {} called", path);
-		log.debug("Paramameter fireStation : {}", fireStation);
+		log.info("POST {} called body : {}", path, fireStation);
 		
 		FireStation firestationSave = fireStationService.save(fireStation);
 		log.debug("firestationSave : {}", firestationSave);
@@ -71,8 +69,7 @@ public class FireStationController {
 
 	@PutMapping(path)
 	public FireStation update(@Valid @RequestBody FireStation fireStation) {
-		log.info("PUT {} called", path);
-		log.debug("Paramameter fireStation : {}", fireStation);
+		log.info("PUT {} called body : {}", path, fireStation);
 		
 		FireStation firestationUpdate = fireStationService.update(fireStation);
 		log.debug("personUpdate : {}", firestationUpdate);
@@ -82,21 +79,20 @@ public class FireStationController {
 					"No found to update this fireStation : " + fireStation);
 		}
 		
-		log.info("PUT {} response : {}", path, firestationUpdate);
+		log.info("PUT {} response body : {}", path, firestationUpdate);
 		return firestationUpdate;
 	}
 
 	@DeleteMapping(path + "/{address}&{stationNumber}")
 	public void delete(@PathVariable String address, @PathVariable int stationNumber) {
-		log.info("DELETE {} called", path + "/{address}&{stationNumber}");
-		log.debug("Paramameter address : {}, stationNumber : {}", address, stationNumber);
+		log.info("DELETE {}/{}&{} called", path, address, stationNumber);
 		
 		if (!fireStationService.delete(address, stationNumber)) {
 			throw new NotFoundException(
 					"No one found at this adresse : " + address + " stationNumber : " + stationNumber);
 		}
 		
-		log.info("DELETE {} end", path);
+		log.info("DELETE {}/{}&{} end", path, address, stationNumber);
 	}
 
 }
